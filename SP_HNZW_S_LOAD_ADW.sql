@@ -12,26 +12,26 @@ Edward0603:
 		DW_DEPT_EMP
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
-	------------申明变量  
-	CURRENT_RPT_DATE    DATE; ----当前最新的报表时间
-	CURRENT_UPLOAD_DATE DATE; ----当前已经处理完成时间
-	QTY_COM             NUMBER; ---记录数
-	V_TABLE_NAME        VARCHAR2(300);
-	V_OBJECT_NAME       VARCHAR2(200);
-	V_MSG               VARCHAR2(300);
+	------------申明变量
+	CURRENT_RPT_DATE	DATE; ----当前最新的报表时间
+	CURRENT_UPLOAD_DATE	DATE; ----当前已经处理完成时间
+	QTY_COM				NUMBER; ---记录数
+	V_TABLE_NAME		VARCHAR2(300);
+	V_OBJECT_NAME		VARCHAR2(200);
+	V_MSG				VARCHAR2(300);
 
 BEGIN
 
 	--所有年份小行业数据
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_INDUSTRY_SMALL;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_INDUSTRY_SMALL';
-			V_OBJECT_NAME     := 'ODS_INDUSTRY_SMALL';
+			V_TABLE_NAME		:= 'INC_INDUSTRY_SMALL';
+			V_OBJECT_NAME		:= 'ODS_INDUSTRY_SMALL';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -104,7 +104,7 @@ BEGIN
 				case when "城市" is null then '长沙'
 					 when "城市"='其他' then '长沙'
 					 when "城市"='湘西土家族苗族自治州' then '湘西'
-					 when   instr("城市",'市')>0 then substr("城市",1,instr("城市",'市')-1) else "城市" END as "城市01",
+					 when instr("城市",'市')>0 then substr("城市",1,instr("城市",'市')-1) else "城市" END as "城市01",
 				"地区",
 				"年份",
 				"月份",
@@ -132,15 +132,15 @@ BEGIN
 
 
 	--商机表
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_BUSINESS_OPP;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_BUSINESS_OPP';
-			V_OBJECT_NAME     := 'ODS_BUSINESS_OPP';
+			V_TABLE_NAME	:= 'INC_BUSINESS_OPP';
+			V_OBJECT_NAME	:= 'ODS_BUSINESS_OPP';
 
 				----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -163,7 +163,7 @@ BEGIN
 			FROM
 				ODS_BUSINESS_OPP a
 			WHERE
-				exists(SELECT 1 FROM INC_BUSINESS_OPP  WHERE 员工姓名=a.员工姓名 );
+				exists(SELECT 1 FROM INC_BUSINESS_OPP WHERE 员工姓名=a.员工姓名 );
 			COMMIT;
 
 			----删除ODS_BUSINESS_OPP中记录；
@@ -250,15 +250,15 @@ BEGIN
 
 
 	--新增客户报表
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_CUSTOMER_NEW;
 
 		IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_CUSTOMER_NEW';
-			V_OBJECT_NAME     := 'ODS_CUSTOMER_NEW';
+			V_TABLE_NAME	:= 'INC_CUSTOMER_NEW';
+			V_OBJECT_NAME	:= 'ODS_CUSTOMER_NEW';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -277,7 +277,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_CUSTOMER_NEW a
-			WHERE exists(SELECT 1 FROM INC_CUSTOMER_NEW  WHERE 员工姓名=a.员工姓名 );
+			WHERE exists(SELECT 1 FROM INC_CUSTOMER_NEW WHERE 员工姓名=a.员工姓名 );
 			COMMIT;
 
 			----删除ODS_CUSTOMER_NEW中记录；
@@ -349,15 +349,15 @@ BEGIN
 
 
 	--丢单报告对象导出结果（无竞争丢单量）
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_LOSE_NO_COM;
 
 	IF QTY_COM>0 then
 		BEGIN
-			V_TABLE_NAME      := 'INC_LOSE_NO_COM';
-			V_OBJECT_NAME     := 'ODS_LOSE_NO_COM';
+			V_TABLE_NAME	:= 'INC_LOSE_NO_COM';
+			V_OBJECT_NAME	:= 'ODS_LOSE_NO_COM';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -376,7 +376,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_LOSE_NO_COM a
-			WHERE exists(SELECT 1 FROM INC_LOSE_NO_COM  WHERE 序号=a.序号 );
+			WHERE exists(SELECT 1 FROM INC_LOSE_NO_COM WHERE 序号=a.序号 );
 			COMMIT;
 
 			----删除ODS_LOSE_NO_COM中记录；
@@ -459,15 +459,15 @@ BEGIN
 
 
 	--丢单报告对象导出结果（有竞争丢单量）
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_LOSE_COM;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_LOSE_COM';
-			V_OBJECT_NAME     := 'ODS_LOSE_COM';
+			V_TABLE_NAME	:= 'INC_LOSE_COM';
+			V_OBJECT_NAME	:= 'ODS_LOSE_COM';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -486,7 +486,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_LOSE_COM a
-			WHERE exists(SELECT 1 FROM INC_LOSE_COM  WHERE 序号=a.序号);
+			WHERE exists(SELECT 1 FROM INC_LOSE_COM WHERE 序号=a.序号);
 			COMMIT;
 
 			----删除ODS_LOSE_COM中记录；
@@ -570,15 +570,15 @@ BEGIN
 
 
 	--客户面访量
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_CUSTOMER_FACE;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_CUSTOMER_FACE';
-			V_OBJECT_NAME     := 'ODS_CUSTOMER_FACE';
+			V_TABLE_NAME	:= 'INC_CUSTOMER_FACE';
+			V_OBJECT_NAME	:= 'ODS_CUSTOMER_FACE';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -597,7 +597,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_CUSTOMER_FACE a
-			WHERE exists(SELECT 1 FROM INC_CUSTOMER_FACE  WHERE 名称=a.名称);
+			WHERE exists(SELECT 1 FROM INC_CUSTOMER_FACE WHERE 名称=a.名称);
 			COMMIT;
 
 			----删除ODS_CUSTOMER_FACE中记录；
@@ -670,14 +670,14 @@ BEGIN
 
 
 	--一线人员3.9日
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_S_PERSON;
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_S_PERSON';
-			V_OBJECT_NAME     := 'ODS_S_PERSON';
+			V_TABLE_NAME	:= 'INC_S_PERSON';
+			V_OBJECT_NAME	:= 'ODS_S_PERSON';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -696,7 +696,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_S_PERSON a
-			WHERE exists(SELECT 1 FROM INC_S_PERSON  WHERE 工号=a.工号);
+			WHERE exists(SELECT 1 FROM INC_S_PERSON WHERE 工号=a.工号);
 			COMMIT;
 
 			----删除ODS_S_PERSON中记录；
@@ -767,10 +767,10 @@ BEGIN
 				TIME_STAMP,
 				省份 -- Edward0601: 省份字段由ODS_S_PERSON中取
 			)
-			SELECT  
+			SELECT
 				工号,
-				case when instr(姓名,'01')>0  then substr(姓名,1,instr(姓名,'01')-1) 
-					 when instr(姓名,'02')>0  then substr(姓名,1,instr(姓名,'02')-1) else 姓名 END, 
+				case when instr(姓名,'01')>0 then substr(姓名,1,instr(姓名,'01')-1) 
+					 when instr(姓名,'02')>0 then substr(姓名,1,instr(姓名,'02')-1) else 姓名 END, 
 				科室,
 				岗位,
 				入职时间,
@@ -778,7 +778,7 @@ BEGIN
 				case when instr(科室,'分公司') >0 then substr(科室,1,instr(科室,'分公司')-1) 
 					 when instr(科室,'办') >0 and instr(科室,'湖南') >0 then substr(科室,instr(科室,'湖南')+2,instr(科室,'办')-instr(科室,'湖南')-2) 
 					 when instr(科室,'办') >0 and instr(科室,'江西')>0 then substr(科室,instr(科室,'江西')+2,instr(科室,'办')-instr(科室,'江西')-2) 
-					 when instr(科室,'办事处') >0  then substr(科室,1,instr(科室,'办事处')-1) else 科室 END,
+					 when instr(科室,'办事处') >0 then substr(科室,1,instr(科室,'办事处')-1) else 科室 END,
 				工作状态,
 				SYSDATE as time_stamp，
 				省份 -- 新增的省份字段 INSERT进DW_DEPT_EMP
@@ -803,15 +803,15 @@ BEGIN
 
 
 	--营销人员里程报表
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_S_PERSON_MILEAGE;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_S_PERSON_MILEAGE';
-			V_OBJECT_NAME     := 'ODS_S_PERSON_MILEAGE';
+			V_TABLE_NAME	:= 'INC_S_PERSON_MILEAGE';
+			V_OBJECT_NAME	:= 'ODS_S_PERSON_MILEAGE';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -830,7 +830,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_S_PERSON_MILEAGE a
-			WHERE exists(SELECT 1 FROM INC_S_PERSON_MILEAGE  WHERE 序号=a.序号);
+			WHERE exists(SELECT 1 FROM INC_S_PERSON_MILEAGE WHERE 序号=a.序号);
 			COMMIT;
 
 			----删除ODS_S_PERSON_MILEAGE中记录；
@@ -892,7 +892,7 @@ BEGIN
 				"车牌号"
 			) 
 			SELECT
-				"设备名称" as  销售代表,
+				"设备名称" as 销售代表,
 				IMEI,
 				"型号",
 				substr(to_char(日期,'yyyymmdd'),1,4) as 年度,
@@ -900,13 +900,13 @@ BEGIN
 				to_date (to_char(日期,'yyyymmdd'),'yyyymmdd') as 日期,
 				b.负责人主属部门 as 分公司,
 				case when b.所属分公司='大客户部' then '长沙'
-					  when b.所属分公司='常张' then '常德'
-					  when b.所属分公司='装载机事业部' then '长沙'
-					  when b.所属分公司='长潭' then '长沙'
-					  when b.所属分公司='九江兼景德镇' then '九江'
-					  when b.所属分公司='赣州西' then '赣州'
-					  when b.所属分公司 is null then '长沙'
-					  else b.所属分公司 END 所属分公司,
+					 when b.所属分公司='常张' then '常德'
+					 when b.所属分公司='装载机事业部' then '长沙'
+					 when b.所属分公司='长潭' then '长沙'
+					 when b.所属分公司='九江兼景德镇' then '九江'
+					 when b.所属分公司='赣州西' then '赣州'
+					 when b.所属分公司 is null then '长沙'
+					 else b.所属分公司 END 所属分公司,
 				"总里程KM",
 				"业务员",
 				"司机名称",
@@ -914,7 +914,7 @@ BEGIN
 			FROM
 				ods_s_person_mileage a,DW_DEPT_EMP b
 			WHERE a.设备名称 = b.负责人(+);
-		    COMMIT;
+			COMMIT;
 
 			--------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -935,15 +935,15 @@ BEGIN
 
 
 	--营销人员行程报表
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM inc_s_person_travel;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'inc_s_person_travel';
-			V_OBJECT_NAME     := 'ODS_S_PERSON_TRAVEL';
+			V_TABLE_NAME	:= 'inc_s_person_travel';
+			V_OBJECT_NAME	:= 'ODS_S_PERSON_TRAVEL';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -962,7 +962,7 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_S_PERSON_TRAVEL a
-			WHERE exists(SELECT 1 FROM inc_s_person_travel  WHERE 序号=a.序号);
+			WHERE exists(SELECT 1 FROM inc_s_person_travel WHERE 序号=a.序号);
 			COMMIT;
 
 			----删除ODS_S_PERSON_TRAVEL中记录；
@@ -1004,7 +1004,7 @@ BEGIN
 				SYSDATE
 			FROM
 				inc_s_person_travel a;
-			COMMIT;    
+			COMMIT;
 
 
 
@@ -1054,13 +1054,13 @@ BEGIN
 				to_date (to_char(开始时间,'yyyymmdd'),'yyyymmdd') as 日期,
 				b.负责人主属部门 as 分公司,
 				case when b.所属分公司='大客户部' then '长沙'
-						  when b.所属分公司='常张' then '常德'
-						  when b.所属分公司='装载机事业部' then '长沙'
-						  when b.所属分公司='长潭' then '长沙'
-						  when b.所属分公司='九江兼景德镇' then '九江'
-						  when b.所属分公司='赣州西' then '赣州'
-						  when b.所属分公司 is null then '长沙'
-						  else b.所属分公司 END 所属分公司,
+					 when b.所属分公司='常张' then '常德'
+					 when b.所属分公司='装载机事业部' then '长沙'
+					 when b.所属分公司='长潭' then '长沙'
+					 when b.所属分公司='九江兼景德镇' then '九江'
+					 when b.所属分公司='赣州西' then '赣州'
+					 when b.所属分公司 is null then '长沙'
+					 else b.所属分公司 END 所属分公司,
 				"开始时间",
 				"结束时间",
 				case when instr("起点",'省')>0 then substr( "起点",1,instr("起点",'省')-1) 
@@ -1074,14 +1074,14 @@ BEGIN
 								 when instr("起点",'宁夏回族自治区')>0 then '宁夏'
 								 when instr("起点",'内蒙古自治区')>0 then '内蒙古'
 								 when instr("起点",'新疆')>0 then '新疆'
-								 when instr("起点",'西藏自治区')>0 then '西藏' else "起点" END  as 起点省,
+								 when instr("起点",'西藏自治区')>0 then '西藏' else "起点" END as 起点省,
 								 case when instr("起点",'省')>0 then 
 								( case when instr("起点",'省辖县')>0 then substr( "起点",instr("起点",'省辖县')+3)
 									   when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'省')+1,instr("起点",'自治州')-instr("起点",'省')+2)
-									   else  substr( "起点",instr("起点",'省')+1,instr("起点",'市')-instr("起点",'省')-1) END)
+									   else substr( "起点",instr("起点",'省')+1,instr("起点",'市')-instr("起点",'省')-1) END)
 								 when instr("起点",'广西壮族自治区')>0 then
-								  ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else  substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
+								( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
+									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END)
 								 when instr("起点",'上海')>0 then '上海'
 								 when instr("起点",'北京')>0 then '北京'
 								 when instr("起点",'重庆')>0 then '重庆'
@@ -1090,28 +1090,28 @@ BEGIN
 								 when instr("起点",'澳门特别行政区')>0 then '澳门'
 								 when instr("起点",'宁夏回族自治区')>0 then
 								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else  substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END )
+									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END )
 								 when instr("起点",'内蒙古自治区')>0 then
 								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else  substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
+									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
 								 when instr("起点",'新疆维吾尔自治区')>0 then 
 								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else  substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END )
+									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END )
 								 when instr("起点",'西藏自治区')>0 then
 								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else  substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
-								 else "起点" END  as 起点市,
+									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
+								 else "起点" END as 起点市,
 								 case when instr("起点",'省辖县')>0 then substr( "起点",instr("起点",'省辖县')+3) 
-								 when  instr("起点",'自治州')>0 then 
+								 when instr("起点",'自治州')>0 then 
 								  (case when instr("起点",',')>0 then 
 										(case when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'县') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'县',1)) 
 																	 when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'市') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'市',1))
 																	 when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'区') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'区',1)) 
-																  END)
+																	 END)
 																	 else (case when instr(substr( "起点",instr("起点",'自治州')+3),'县') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'县',1)) 
 																	 when instr(substr( "起点",instr("起点",'自治州')+3),'市') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'市',1))
 																	 when instr(substr( "起点",instr("起点",'自治州')+3),'区') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'区',1)) 
-																	 END )  END)
+																	 END ) END)
 								 when instr("起点",'市')>0 then (case when instr("起点",',')>0 then 
 																	(case when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'县') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'县',1)) 
 																	 when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
@@ -1137,14 +1137,14 @@ BEGIN
 								 when instr("终点",'宁夏回族自治区')>0 then '宁夏'
 								 when instr("终点",'内蒙古自治区')>0 then '内蒙古'
 								 when instr("终点",'新疆')>0 then '新疆'
-								 when instr("终点",'西藏自治区')>0 then '西藏' else "终点" END  as 终点省,
+								 when instr("终点",'西藏自治区')>0 then '西藏' else "终点" END as 终点省,
 								 case when instr("终点",'省')>0 then 
 								( case when instr("终点",'省辖县')>0 then substr( "终点",instr("终点",'省辖县')+3)
 									   when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'省')+1,instr("终点",'自治州')-instr("终点",'省')+2)
-									   else  substr( "终点",instr("终点",'省')+1,instr("终点",'市')-instr("终点",'省')-1) END)
+									   else substr( "终点",instr("终点",'省')+1,instr("终点",'市')-instr("终点",'省')-1) END)
 								 when instr("终点",'广西壮族自治区')>0 then
-								  ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else  substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
+								(case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
+								 else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
 								 when instr("终点",'上海')>0 then '上海'
 								 when instr("终点",'北京')>0 then '北京'
 								 when instr("终点",'重庆')>0 then '重庆'
@@ -1153,28 +1153,28 @@ BEGIN
 								 when instr("终点",'澳门特别行政区')>0 then '澳门'
 								 when instr("终点",'宁夏回族自治区')>0 then
 								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else  substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END )
+									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END )
 								 when instr("终点",'内蒙古自治区')>0 then
 								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else  substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
+									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
 								 when instr("终点",'新疆维吾尔自治区')>0 then 
 								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else  substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END )
+									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END )
 								 when instr("终点",'西藏自治区')>0 then
 								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else  substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
-								 else "终点" END  as 终点市,
+									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
+								 else "终点" END as 终点市,
 								 case when instr("终点",'省辖县')>0 then substr( "终点",instr("终点",'省辖县')+3) 
-								 when  instr("终点",'自治州')>0 then 
-								  (case when instr("终点",',')>0 then 
+								 when instr("终点",'自治州')>0 then 
+								(case when instr("终点",',')>0 then 
 										(case when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'县') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'县',1)) 
 																	 when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'市') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'市',1))
 																	 when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'区') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'区',1)) 
-																  END)
+																	 END)
 																	 else (case when instr(substr( "终点",instr("终点",'自治州')+3),'县') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'县',1)) 
 																	 when instr(substr( "终点",instr("终点",'自治州')+3),'市') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'市',1))
 																	 when instr(substr( "终点",instr("终点",'自治州')+3),'区') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'区',1)) 
-																	 END )  END)
+																	 END ) END)
 								 when instr("终点",'市')>0 then (case when instr("终点",',')>0 then 
 																	(case when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'县') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'县',1)) 
 																	 when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
@@ -1217,15 +1217,15 @@ BEGIN
 
 
 	--机型吨位对照表
-	QTY_COM  := 0 ;
+	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_MAP_MODEL;
 
 	IF QTY_COM>0 then 
 		BEGIN
-			V_TABLE_NAME      := 'INC_MAP_MODEL';
-			V_OBJECT_NAME     := 'ODS_MAP_MODEL';
+			V_TABLE_NAME	:= 'INC_MAP_MODEL';
+			V_OBJECT_NAME	:= 'ODS_MAP_MODEL';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -1300,8 +1300,8 @@ BEGIN
 	IF QTY_COM>0 then 
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_INDUSTRY_BIG';
-			V_OBJECT_NAME     := 'ODS_INDUSTRY_BIG';
+			V_TABLE_NAME	:= 'INC_INDUSTRY_BIG';
+			V_OBJECT_NAME	:= 'ODS_INDUSTRY_BIG';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -1405,8 +1405,8 @@ BEGIN
 
 	IF QTY_COM>0 then
 		BEGIN
-			V_TABLE_NAME      := 'INC_S_DETAIL';
-			V_OBJECT_NAME     := 'ODS_S_DETAIL';
+			V_TABLE_NAME	:= 'INC_S_DETAIL';
+			V_OBJECT_NAME	:= 'ODS_S_DETAIL';
 
 				----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -1743,8 +1743,8 @@ BEGIN
 	IF QTY_COM>0 then
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_S_PROFIT';
-			V_OBJECT_NAME     := 'ODS_S_PROFIT';
+			V_TABLE_NAME	:= 'INC_S_PROFIT';
+			V_OBJECT_NAME	:= 'ODS_S_PROFIT';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -1954,8 +1954,8 @@ BEGIN
 	IF QTY_COM>0 then 
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_EXC_LEDGER';
-			V_OBJECT_NAME     := 'ODS_EXC_LEDGER';
+			V_TABLE_NAME	:= 'INC_EXC_LEDGER';
+			V_OBJECT_NAME	:= 'ODS_EXC_LEDGER';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -2134,8 +2134,8 @@ BEGIN
 	IF QTY_COM>0 then 
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_HNZW1_1000';
-			V_OBJECT_NAME     := 'DW_HNZW_WJGS';
+			V_TABLE_NAME	:= 'INC_HNZW1_1000';
+			V_OBJECT_NAME	:= 'DW_HNZW_WJGS';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -2226,8 +2226,8 @@ BEGIN
 	IF QTY_COM>0 then 
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_ACC_REC';
-			V_OBJECT_NAME     := 'ODS_ACC_REC';
+			V_TABLE_NAME	:= 'INC_ACC_REC';
+			V_OBJECT_NAME	:= 'ODS_ACC_REC';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -2355,8 +2355,8 @@ BEGIN
 	IF QTY_COM>0 then 
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_SERVICE_ORDERS';
-			V_OBJECT_NAME     := '"服务订单"';
+			V_TABLE_NAME	:= 'INC_SERVICE_ORDERS';
+			V_OBJECT_NAME	:= '"服务订单"';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -2502,8 +2502,8 @@ BEGIN
 	IF QTY_COM>0 then 
 
 		BEGIN
-			V_TABLE_NAME      := 'INC_SEV_S_DETAIL';
-			V_OBJECT_NAME     := 'ODS_SEV_S_DETAIL';
+			V_TABLE_NAME	:= 'INC_SEV_S_DETAIL';
+			V_OBJECT_NAME	:= 'ODS_SEV_S_DETAIL';
 
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -2748,7 +2748,6 @@ BEGIN
 		-------记录报表处理的日志
 			prc_wlf_sys_writelog('DM_S_SALES',SYSDATE,
 				'发生系统错误 ： 错误代码 ' || SQLCODE( ) || '   错误信息：' ||SQLERRM( ) ,'错误日志记录');
-        
 	END;
 
 
@@ -2780,7 +2779,7 @@ BEGIN
 			sum("毛利") as 毛利,
 			case when sum("销售金额")=0 then 0 else sum(毛利)/sum("销售金额") END   as 利润率
 		-- Edward: 已变更字段ODS_MAP_MODEL.类型->小中大挖
-        FROM 
+		FROM 
 			(SELECT b.小中大挖,
 				a.小行业,
 				"城市01" as 城市,
@@ -3410,7 +3409,7 @@ BEGIN
 			a.销售年份  as 年度,
 			case when instr(销售月份SY,'月')>0 then 
 					(case when length(substr(销售月份SY,1,instr(销售月份SY,'月')-1))=1 then '0'||substr(销售月份SY,1,instr(销售月份SY,'月')-1)
-				     else substr(销售月份SY,1,instr(销售月份SY,'月')-1) END)
+					 else substr(销售月份SY,1,instr(销售月份SY,'月')-1) END)
 				when length(销售月份SY)=1 then '0'||销售月份SY
 				when 销售月份SY is null then substr(to_char(CRM过账交机时间,'yyyymmdd'),5,2)
 				else 销售月份SY END as 月度,
@@ -4182,7 +4181,7 @@ BEGIN
 			to_date(substr(to_char("更新时间",'YYYYMMDD'),1,6)||'01','YYYY-MM-DD') ,
 			substr(to_char("更新时间",'YYYYMMDD'),1,4)||'W'||to_char("更新时间",'ww');
 
-		COMMIT;             
+		COMMIT;
 		--------记录报表处理的日志
 		INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
 			values('DM_S_HNZW_GSQX',SYSDATE,'DM_S_HNZW_GSQX数据更新完成','日志记录');
@@ -4339,7 +4338,7 @@ BEGIN
 			ods_exc_ledger a,
 			dm_hnzw_zgs b
 		WHERE
-			a."机号"=b."机号"(+);    
+			a."机号"=b."机号"(+);
 		COMMIT;
 
 		--------记录报表处理的日志
