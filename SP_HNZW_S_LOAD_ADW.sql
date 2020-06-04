@@ -10,6 +10,8 @@ Edward0603:
 
 		INC, ODS, _S_PERSON
 		DW_DEPT_EMP
+Edward0406:
+	-bug fix: compiles now
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 	------------…Í√˜±‰¡ø
