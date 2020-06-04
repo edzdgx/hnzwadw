@@ -24,12 +24,12 @@ CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 
 BEGIN
 	--所有年份小行业数据
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_INDUSTRY_SMALL;
 
-	IF QTY_COM>0 then 
+	IF QTY_COM>0 then
 		BEGIN
 			V_TABLE_NAME		:= 'INC_INDUSTRY_SMALL';
 			V_OBJECT_NAME		:= 'ODS_INDUSTRY_SMALL';
@@ -133,7 +133,7 @@ BEGIN
 
 
 	--商机表
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_BUSINESS_OPP;
@@ -251,7 +251,7 @@ BEGIN
 
 
 	--新增客户报表
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_CUSTOMER_NEW;
@@ -351,7 +351,7 @@ BEGIN
 
 	--丢单报告对象导出结果（无竞争丢单量）
 	-- Edward0604: INC_LOSE_NO_COM, ODS_LOSE_NO_COM 省份已添加
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_LOSE_NO_COM;
@@ -463,7 +463,7 @@ BEGIN
 
 
 	--丢单报告对象导出结果（有竞争丢单量）
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_LOSE_COM;
@@ -574,7 +574,7 @@ BEGIN
 
 
 	--客户面访量
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_CUSTOMER_FACE;
@@ -674,7 +674,7 @@ BEGIN
 
 
 	--一线人员3.9日
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_S_PERSON;
@@ -807,7 +807,7 @@ BEGIN
 
 
 	--营销人员里程报表
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_S_PERSON_MILEAGE;
@@ -939,7 +939,7 @@ BEGIN
 
 
 	--营销人员行程报表
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM inc_s_person_travel;
@@ -1068,129 +1068,137 @@ BEGIN
 				"开始时间",
 				"结束时间",
 				case when instr("起点",'省')>0 then substr( "起点",1,instr("起点",'省')-1) 
-								 when instr("起点",'广西壮族自治区')>0 then '广西'
-								 when instr("起点",'上海')>0 then '上海'
-								 when instr("起点",'北京')>0 then '北京'
-								 when instr("起点",'重庆')>0 then '重庆'
-								 when instr("起点",'天津')>0 then '天津'
-								 when instr("起点",'香港特别行政区')>0 then '香港'
-								 when instr("起点",'澳门特别行政区')>0 then '澳门'
-								 when instr("起点",'宁夏回族自治区')>0 then '宁夏'
-								 when instr("起点",'内蒙古自治区')>0 then '内蒙古'
-								 when instr("起点",'新疆')>0 then '新疆'
-								 when instr("起点",'西藏自治区')>0 then '西藏' else "起点" END as 起点省,
-								 case when instr("起点",'省')>0 then 
-								( case when instr("起点",'省辖县')>0 then substr( "起点",instr("起点",'省辖县')+3)
-									   when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'省')+1,instr("起点",'自治州')-instr("起点",'省')+2)
-									   else substr( "起点",instr("起点",'省')+1,instr("起点",'市')-instr("起点",'省')-1) END)
-								 when instr("起点",'广西壮族自治区')>0 then
-								( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END)
-								 when instr("起点",'上海')>0 then '上海'
-								 when instr("起点",'北京')>0 then '北京'
-								 when instr("起点",'重庆')>0 then '重庆'
-								 when instr("起点",'天津')>0 then '天津'
-								 when instr("起点",'香港特别行政区')>0 then '香港'
-								 when instr("起点",'澳门特别行政区')>0 then '澳门'
-								 when instr("起点",'宁夏回族自治区')>0 then
-								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END )
-								 when instr("起点",'内蒙古自治区')>0 then
-								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
-								 when instr("起点",'新疆维吾尔自治区')>0 then 
-								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END )
-								 when instr("起点",'西藏自治区')>0 then
-								 ( case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
-									   else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
-								 else "起点" END as 起点市,
-								 case when instr("起点",'省辖县')>0 then substr( "起点",instr("起点",'省辖县')+3) 
-								 when instr("起点",'自治州')>0 then 
-								  (case when instr("起点",',')>0 then 
-										(case when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'县') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'县',1)) 
-																	 when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'市') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'市',1))
-																	 when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'区') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'区',1)) 
-																	 END)
-																	 else (case when instr(substr( "起点",instr("起点",'自治州')+3),'县') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'县',1)) 
-																	 when instr(substr( "起点",instr("起点",'自治州')+3),'市') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'市',1))
-																	 when instr(substr( "起点",instr("起点",'自治州')+3),'区') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'区',1)) 
-																	 END ) END)
-								 when instr("起点",'市')>0 then (case when instr("起点",',')>0 then 
-																	(case when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'县') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'县',1)) 
-																	 when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
-																	 when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'市') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'市',1))
-																	 when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'区') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'区',1)) 
-																	 END )
-																	 else (case when instr(substr( "起点",instr("起点",'市')+1),'县') >0 then substr(substr( "起点",instr("起点",'市')+1),1,instr(substr( "起点",instr("起点",'市')+1),'县',1)) 
-																	 when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
-																	 when instr(substr( "起点",instr("起点",'市')+1),'市') >0 then substr(substr( "起点",instr("起点",'市')+1),1,instr(substr( "起点",instr("起点",'市')+1),'市',1))
-																	 when instr(substr( "起点",instr("起点",'市')+1),'区') >0 then substr(substr( "起点",instr("起点",'市')+1),1,instr(substr( "起点",instr("起点",'市')+1),'区',1)) 
-																	 END ) END)
-								 else "起点" END as 起点区县,
-								 
+					 when instr("起点",'广西壮族自治区')>0 then '广西'
+					 when instr("起点",'上海')>0 then '上海'
+					 when instr("起点",'北京')>0 then '北京'
+					 when instr("起点",'重庆')>0 then '重庆'
+					 when instr("起点",'天津')>0 then '天津'
+					 when instr("起点",'香港特别行政区')>0 then '香港'
+					 when instr("起点",'澳门特别行政区')>0 then '澳门'
+					 when instr("起点",'宁夏回族自治区')>0 then '宁夏'
+					 when instr("起点",'内蒙古自治区')>0 then '内蒙古'
+					 when instr("起点",'新疆')>0 then '新疆'
+					 when instr("起点",'西藏自治区')>0 then '西藏' else "起点" END as 起点省,
+				case when instr("起点",'省')>0 then 
+					(case when instr("起点",'省辖县')>0 then substr( "起点",instr("起点",'省辖县')+3)
+						  when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'省')+1,instr("起点",'自治州')-instr("起点",'省')+2)
+						  else substr( "起点",instr("起点",'省')+1,instr("起点",'市')-instr("起点",'省')-1) END)
+					 when instr("起点",'广西壮族自治区')>0 then
+					(case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
+						  else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END)
+					 when instr("起点",'上海')>0 then '上海'
+					 when instr("起点",'北京')>0 then '北京'
+					 when instr("起点",'重庆')>0 then '重庆'
+					 when instr("起点",'天津')>0 then '天津'
+					 when instr("起点",'香港特别行政区')>0 then '香港'
+					 when instr("起点",'澳门特别行政区')>0 then '澳门'
+					 when instr("起点",'宁夏回族自治区')>0 then
+					(case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
+						  else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区')) END )
+					 when instr("起点",'内蒙古自治区')>0 then
+					(case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
+						  else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
+					 when instr("起点",'新疆维吾尔自治区')>0 then 
+					(case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
+						  else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END )
+					 when instr("起点",'西藏自治区')>0 then
+					(case when instr("起点",'自治州')>0 then substr( "起点",instr("起点",'自治区')+3,instr("起点",'自治州')-instr("起点",'自治区')+2)
+						  else substr( "起点",instr("起点",'自治区')+3,instr("起点",'市')-instr("起点",'自治区'))END)
+					 else "起点" END as 起点市,
+				case when instr("起点",'省辖县')>0 then substr( "起点",instr("起点",'省辖县')+3) 
+					 when instr("起点",'自治州')>0 then 
+						(case when instr("起点",',')>0 then 
+							 (case when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'县') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'县',1)) 
+								   when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'市') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'市',1))
+								   when instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'区') >0 then substr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),1,instr(substr( "起点",instr("起点",'自治州')+3,instr("起点",',')-instr("起点",'自治州')-3),'区',1)) 
+							  END)
+								   else (case when instr(substr( "起点",instr("起点",'自治州')+3),'县') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'县',1)) 
+								   when instr(substr( "起点",instr("起点",'自治州')+3),'市') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'市',1))
+								   when instr(substr( "起点",instr("起点",'自治州')+3),'区') >0 then substr(substr( "起点",instr("起点",'自治州')+3),1,instr(substr( "起点",instr("起点",'自治州')+3),'区',1)) 
+							  END)
+						 END)
+					 when instr("起点",'市')>0 then
+						(case when instr("起点",',')>0 then 
+							(case when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'县') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'县',1)) 
+								  when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
+								  when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'市') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'市',1))
+								  when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'区') >0 then substr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),1,instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'区',1)) 
+							 END)
+					 	else
+					 		(case when instr(substr( "起点",instr("起点",'市')+1),'县') >0 then substr(substr( "起点",instr("起点",'市')+1),1,instr(substr( "起点",instr("起点",'市')+1),'县',1)) 
+						 	 	  when instr(substr( "起点",instr("起点",'市')+1,instr("起点",',')-instr("起点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
+						 	 	  when instr(substr( "起点",instr("起点",'市')+1),'市') >0 then substr(substr( "起点",instr("起点",'市')+1),1,instr(substr( "起点",instr("起点",'市')+1),'市',1))
+						 	 	  when instr(substr( "起点",instr("起点",'市')+1),'区') >0 then substr(substr( "起点",instr("起点",'市')+1),1,instr(substr( "起点",instr("起点",'市')+1),'区',1)) 
+						 	 END)
+					 	 END)
+					 else "起点" END as 起点区县,
 				"起点",
 				case when instr("终点",'省')>0 then substr( "终点",1,instr("终点",'省')-1) 
-								 when instr("终点",'广西壮族自治区')>0 then '广西'
-								 when instr("终点",'上海')>0 then '上海'
-								 when instr("终点",'北京')>0 then '北京'
-								 when instr("终点",'重庆')>0 then '重庆'
-								 when instr("终点",'天津')>0 then '天津'
-								 when instr("终点",'香港特别行政区')>0 then '香港'
-								 when instr("终点",'澳门特别行政区')>0 then '澳门'
-								 when instr("终点",'宁夏回族自治区')>0 then '宁夏'
-								 when instr("终点",'内蒙古自治区')>0 then '内蒙古'
-								 when instr("终点",'新疆')>0 then '新疆'
-								 when instr("终点",'西藏自治区')>0 then '西藏' else "终点" END as 终点省,
-								 case when instr("终点",'省')>0 then 
-								( case when instr("终点",'省辖县')>0 then substr( "终点",instr("终点",'省辖县')+3)
-									   when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'省')+1,instr("终点",'自治州')-instr("终点",'省')+2)
-									   else substr( "终点",instr("终点",'省')+1,instr("终点",'市')-instr("终点",'省')-1) END)
-								 when instr("终点",'广西壮族自治区')>0 then
-								(case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-								 else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
-								 when instr("终点",'上海')>0 then '上海'
-								 when instr("终点",'北京')>0 then '北京'
-								 when instr("终点",'重庆')>0 then '重庆'
-								 when instr("终点",'天津')>0 then '天津'
-								 when instr("终点",'香港特别行政区')>0 then '香港'
-								 when instr("终点",'澳门特别行政区')>0 then '澳门'
-								 when instr("终点",'宁夏回族自治区')>0 then
-								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END )
-								 when instr("终点",'内蒙古自治区')>0 then
-								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
-								 when instr("终点",'新疆维吾尔自治区')>0 then 
-								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END )
-								 when instr("终点",'西藏自治区')>0 then
-								 ( case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
-									   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
-								 else "终点" END as 终点市,
-								 case when instr("终点",'省辖县')>0 then substr( "终点",instr("终点",'省辖县')+3) 
-								 when instr("终点",'自治州')>0 then 
-								(case when instr("终点",',')>0 then 
-										(case when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'县') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'县',1)) 
-																	 when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'市') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'市',1))
-																	 when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'区') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'区',1)) 
-																	 END)
-																	 else (case when instr(substr( "终点",instr("终点",'自治州')+3),'县') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'县',1)) 
-																	 when instr(substr( "终点",instr("终点",'自治州')+3),'市') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'市',1))
-																	 when instr(substr( "终点",instr("终点",'自治州')+3),'区') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'区',1)) 
-																	 END ) END)
-								 when instr("终点",'市')>0 then (case when instr("终点",',')>0 then 
-																	(case when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'县') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'县',1)) 
-																	 when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
-																	 when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'市') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'市',1))
-																	 when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'区') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'区',1)) 
-																	 END )
-																	 else (case when instr(substr( "终点",instr("终点",'市')+1),'县') >0 then substr(substr( "终点",instr("终点",'市')+1),1,instr(substr( "终点",instr("终点",'市')+1),'县',1)) 
-																	 when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
-																	 when instr(substr( "终点",instr("终点",'市')+1),'市') >0 then substr(substr( "终点",instr("终点",'市')+1),1,instr(substr( "终点",instr("终点",'市')+1),'市',1))
-																	 when instr(substr( "终点",instr("终点",'市')+1),'区') >0 then substr(substr( "终点",instr("终点",'市')+1),1,instr(substr( "终点",instr("终点",'市')+1),'区',1)) 
-																	 END ) END)
-								 else "终点" END as 终点区县,
+					 when instr("终点",'广西壮族自治区')>0 then '广西'
+					 when instr("终点",'上海')>0 then '上海'
+					 when instr("终点",'北京')>0 then '北京'
+					 when instr("终点",'重庆')>0 then '重庆'
+					 when instr("终点",'天津')>0 then '天津'
+					 when instr("终点",'香港特别行政区')>0 then '香港'
+					 when instr("终点",'澳门特别行政区')>0 then '澳门'
+					 when instr("终点",'宁夏回族自治区')>0 then '宁夏'
+					 when instr("终点",'内蒙古自治区')>0 then '内蒙古'
+					 when instr("终点",'新疆')>0 then '新疆'
+					 when instr("终点",'西藏自治区')>0 then '西藏' else "终点" END as 终点省,
+				case when instr("终点",'省')>0 then 
+					(case when instr("终点",'省辖县')>0 then substr( "终点",instr("终点",'省辖县')+3)
+						  when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'省')+1,instr("终点",'自治州')-instr("终点",'省')+2)
+						  else substr( "终点",instr("终点",'省')+1,instr("终点",'市')-instr("终点",'省')-1) END)
+					 when instr("终点",'广西壮族自治区')>0 then
+				 	(case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
+						  else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区'))END)
+					 when instr("终点",'上海')>0 then '上海'
+					 when instr("终点",'北京')>0 then '北京'
+					 when instr("终点",'重庆')>0 then '重庆'
+					 when instr("终点",'天津')>0 then '天津'
+					 when instr("终点",'香港特别行政区')>0 then '香港'
+					 when instr("终点",'澳门特别行政区')>0 then '澳门'
+					 when instr("终点",'宁夏回族自治区')>0 then
+						 (case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
+							   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END)
+					 when instr("终点",'内蒙古自治区')>0 then
+						 (case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
+							   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END)
+					 when instr("终点",'新疆维吾尔自治区')>0 then 
+						 (case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
+							   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END)
+					 when instr("终点",'西藏自治区')>0 then
+						 (case when instr("终点",'自治州')>0 then substr( "终点",instr("终点",'自治区')+3,instr("终点",'自治州')-instr("终点",'自治区')+2)
+							   else substr( "终点",instr("终点",'自治区')+3,instr("终点",'市')-instr("终点",'自治区')) END)
+					 else "终点" END as 终点市,
+				case when instr("终点",'省辖县')>0 then substr( "终点",instr("终点",'省辖县')+3) 
+					 when instr("终点",'自治州')>0 then 
+						(case when instr("终点",',')>0 then 
+							(case when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'县') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'县',1)) 
+								  when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'市') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'市',1))
+								  when instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'区') >0 then substr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),1,instr(substr( "终点",instr("终点",'自治州')+3,instr("终点",',')-instr("终点",'自治州')-3),'区',1)) 
+							 END)
+						 else
+						 	(case when instr(substr( "终点",instr("终点",'自治州')+3),'县') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'县',1)) 
+								  when instr(substr( "终点",instr("终点",'自治州')+3),'市') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'市',1))
+								  when instr(substr( "终点",instr("终点",'自治州')+3),'区') >0 then substr(substr( "终点",instr("终点",'自治州')+3),1,instr(substr( "终点",instr("终点",'自治州')+3),'区',1)) 
+							 END)
+						 END)
+					 when instr("终点",'市')>0 then
+						(case when instr("终点",',')>0 then 
+							(case when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'县') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'县',1)) 
+								  when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
+								  when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'市') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'市',1))
+								  when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'区') >0 then substr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),1,instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'区',1)) 
+							 END)
+						 else
+						 	(case when instr(substr( "终点",instr("终点",'市')+1),'县') >0 then substr(substr( "终点",instr("终点",'市')+1),1,instr(substr( "终点",instr("终点",'市')+1),'县',1)) 
+								  when instr(substr( "终点",instr("终点",'市')+1,instr("终点",',')-instr("终点",'市')-1),'雨花区高桥大市场') >0 then '雨花区'
+								  when instr(substr( "终点",instr("终点",'市')+1),'市') >0 then substr(substr( "终点",instr("终点",'市')+1),1,instr(substr( "终点",instr("终点",'市')+1),'市',1))
+								  when instr(substr( "终点",instr("终点",'市')+1),'区') >0 then substr(substr( "终点",instr("终点",'市')+1),1,instr(substr( "终点",instr("终点",'市')+1),'区',1)) 
+							 END)
+						 END)
+					 else "终点" END as 终点区县,
 				"终点",
 				"总里程KM",
 				"总用时时间",
@@ -1198,8 +1206,10 @@ BEGIN
 				"司机名称",
 				"车牌号"
 			FROM
-				ods_s_person_travel a,DW_DEPT_EMP b
-			WHERE a.设备名称 = b.负责人(+);
+				ods_s_person_travel a,
+				DW_DEPT_EMP b
+			WHERE
+				a.设备名称 = b.负责人(+);
 			COMMIT;
 
 			--------记录报表处理的日志
@@ -1221,7 +1231,7 @@ BEGIN
 
 
 	--机型吨位对照表
-	QTY_COM := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_MAP_MODEL;
@@ -1249,12 +1259,12 @@ BEGIN
 
 			-- Edward: 已变更字段INC_MAP_MODEL, ODS_MAP_MODEL
 			FROM ODS_MAP_MODEL a
-			WHERE exists(SELECT 1 FROM INC_MAP_MODEL  WHERE 小中大挖=a.小中大挖 and 型号=a.型号 );
+			WHERE exists(SELECT 1 FROM INC_MAP_MODEL WHERE 小中大挖=a.小中大挖 and 型号=a.型号 );
 			COMMIT;
 
 			----删除ODS_MAP_MODEL中记录；
 			DELETE FROM ODS_MAP_MODEL a
-			WHERE exists(SELECT 1 FROM INC_MAP_MODEL  WHERE 小中大挖=a.小中大挖 and 型号=a.型号);
+			WHERE exists(SELECT 1 FROM INC_MAP_MODEL WHERE 小中大挖=a.小中大挖 and 型号=a.型号);
 			COMMIT;
 
 			----插入增量表中数据
@@ -1297,7 +1307,7 @@ BEGIN
 
 
 	--湖南所有年份大行业数据
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_INDUSTRY_BIG;
@@ -1324,12 +1334,12 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_INDUSTRY_BIG a
-			WHERE exists(SELECT 1 FROM INC_INDUSTRY_BIG  WHERE 年份=a.年份 and 月份=a.月份 );
+			WHERE exists(SELECT 1 FROM INC_INDUSTRY_BIG WHERE 年份=a.年份 and 月份=a.月份 );
 			COMMIT;
 
 			----删除ODS_INDUSTRY_BIG中记录；
 			DELETE FROM ODS_INDUSTRY_BIG a
-			WHERE exists(SELECT 1 FROM INC_INDUSTRY_BIG  WHERE 年份=a.年份 and 月份=a.月份 );
+			WHERE exists(SELECT 1 FROM INC_INDUSTRY_BIG WHERE 年份=a.年份 and 月份=a.月份 );
 			COMMIT;
 
 			----插入增量表中数据
@@ -1402,7 +1412,7 @@ BEGIN
 
 
 	--销售明细表 Edward已修改: INC_S_DETAIL ODS_S_DETAIL DW_S_DETAIL(未修改)
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_S_DETAIL;
@@ -1740,7 +1750,7 @@ BEGIN
 
 
 	--毛利表
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_S_PROFIT;
@@ -1917,7 +1927,7 @@ BEGIN
 				nvl("成本赠送配件",0) as 赠送配件金额,
 				nvl("成本信息费",0) as 信息费,
 				nvl("包干费用管理费",0) as 管理费用,
-				nvl("包干费用承担利息",0)-nvl("包干费用收客户利息",0) as  融资包干利息,
+				nvl("包干费用承担利息",0)-nvl("包干费用收客户利息",0) as 融资包干利息,
 				nvl("销售提奖",0)+nvl("二三五八奖",0)+nvl("管理奖",0) as 提奖,
 				nvl("签单招待费",0) as 招待费,
 				nvl("奖返利",0) as 奖励返利,
@@ -1925,8 +1935,8 @@ BEGIN
 				nvl("毛利2",0) as"毛利2",
 				nvl("毛利3",0) as"毛利3",
 				"置换机销售日期",
-				-- case when nvl("置换机抵入价",0)-nvl("置换机销售价",0)=0 then 0-nvl("折让",0) else  nvl("置换机抵入价",0)-nvl("置换机销售价",0) END as 旧机亏损,
-				nvl("置换机抵入价",0)-nvl("置换机销售价",0)  as 旧机亏损,
+				-- case when nvl("置换机抵入价",0)-nvl("置换机销售价",0)=0 then 0-nvl("折让",0) else nvl("置换机抵入价",0)-nvl("置换机销售价",0) END as 旧机亏损,
+				nvl("置换机抵入价",0)-nvl("置换机销售价",0) as 旧机亏损,
 				"是否单位客户",
 				'' 日期
 			FROM
@@ -1951,7 +1961,7 @@ BEGIN
 
 
 	--一户一册
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_EXC_LEDGER;
@@ -1984,11 +1994,11 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_EXC_LEDGER a
-			WHERE exists(SELECT 1 FROM INC_EXC_LEDGER  WHERE 机号=a.机号 );
+			WHERE exists(SELECT 1 FROM INC_EXC_LEDGER WHERE 机号=a.机号 );
 			COMMIT;
 			----删除ODS_EXC_LEDGER中记录；
 			DELETE FROM ODS_EXC_LEDGER a
-			WHERE exists(SELECT 1 FROM INC_EXC_LEDGER  WHERE 机号=a.机号 );
+			WHERE exists(SELECT 1 FROM INC_EXC_LEDGER WHERE 机号=a.机号 );
 			COMMIT;
 
 			----插入增量表中数据
@@ -2131,7 +2141,7 @@ BEGIN
 
 
 	--工时数据
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_HNZW1_1000;
@@ -2164,11 +2174,11 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM DW_HNZW_WJGS a
-			WHERE exists(SELECT 1 FROM INC_HNZW1_1000  WHERE 机号=a.机号 and 更新时间=a.更新时间 );
+			WHERE exists(SELECT 1 FROM INC_HNZW1_1000 WHERE 机号=a.机号 and 更新时间=a.更新时间 );
 			COMMIT;
 			----删除DW_HNZW_WJGS中记录；
 			DELETE FROM DW_HNZW_WJGS a
-			WHERE exists(SELECT 1 FROM INC_HNZW1_1000  WHERE 机号=a.机号 and 更新时间=a.更新时间);
+			WHERE exists(SELECT 1 FROM INC_HNZW1_1000 WHERE 机号=a.机号 and 更新时间=a.更新时间);
 			COMMIT;
 
 			----插入增量表中数据
@@ -2223,7 +2233,7 @@ BEGIN
 
 
 	--债权应收账
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_ACC_REC;
@@ -2256,12 +2266,12 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM ODS_ACC_REC a
-			WHERE exists(SELECT 1 FROM INC_ACC_REC  WHERE 机号=a.机号 and 还款计划行号=a.还款计划行号 );
+			WHERE exists(SELECT 1 FROM INC_ACC_REC WHERE 机号=a.机号 and 还款计划行号=a.还款计划行号);
 			COMMIT;
 			----删除ODS_ACC_REC中记录；
 			delete 
 			FROM ODS_ACC_REC a
-			WHERE exists(SELECT 1 FROM INC_ACC_REC  WHERE 机号=a.机号 and 还款计划行号=a.还款计划行号 );
+			WHERE exists(SELECT 1 FROM INC_ACC_REC WHERE 机号=a.机号 and 还款计划行号=a.还款计划行号);
 			COMMIT;
 
 			----插入增量表中数据
@@ -2352,7 +2362,7 @@ BEGIN
 
 
 	--服务订单
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_SERVICE_ORDERS;
@@ -2385,12 +2395,12 @@ BEGIN
 				V_OBJECT_NAME || '数据备份处理',
 				'数据备份记录'
 			FROM "服务订单" a
-			WHERE exists(SELECT 1 FROM INC_SERVICE_ORDERS  WHERE 服务订单号=a.服务订单号 );
+			WHERE exists(SELECT 1 FROM INC_SERVICE_ORDERS WHERE 服务订单号=a.服务订单号);
 			COMMIT;
 			----删除ODS_SERVICE_ORDERS中记录；
 			delete 
 			FROM "服务订单" a
-			WHERE exists(SELECT 1 FROM INC_SERVICE_ORDERS  WHERE 服务订单号=a.服务订单号);
+			WHERE exists(SELECT 1 FROM INC_SERVICE_ORDERS WHERE 服务订单号=a.服务订单号);
 			COMMIT;
 
 			----插入增量表中数据
@@ -2461,7 +2471,7 @@ BEGIN
 			COMMIT;
 
 			INSERT INTO
-				dw_service_orders   
+				dw_service_orders
 			SELECT "订单完工时间",
 				"服务订单号",
 				"客户",
@@ -2499,7 +2509,7 @@ BEGIN
 
 
 	--湖南服务促进主机销售数据
-	QTY_COM  := 0 ;
+	QTY_COM := 0;
 	SELECT count(1)
 	into QTY_COM
 	FROM INC_SEV_S_DETAIL;
@@ -2533,17 +2543,18 @@ BEGIN
 				'数据备份记录'
 			FROM
 				ODS_SEV_S_DETAIL a
-			WHERE exists(SELECT 1 FROM INC_SEV_S_DETAIL  WHERE ID=a.ID and 机器编号=a.机器编号  and 类型=a.类型);
+			WHERE exists(SELECT 1 FROM INC_SEV_S_DETAIL WHERE ID=a.ID and 机器编号=a.机器编号 and 类型=a.类型);
 			COMMIT;
 			
 			----删除ODS_SERVICE_ORDERS中记录；
 			DELETE FROM
 				ODS_SEV_S_DETAIL a
-			WHERE exists(SELECT 1 FROM INC_SEV_S_DETAIL  WHERE ID=a.ID and 机器编号=a.机器编号  and 类型=a.类型);
+			WHERE exists(SELECT 1 FROM INC_SEV_S_DETAIL WHERE ID=a.ID and 机器编号=a.机器编号 and 类型=a.类型);
 			COMMIT;
 
 			----插入增量表中数据
-			INSERT INTO ODS_SEV_S_DETAIL (  id,
+			INSERT INTO ODS_SEV_S_DETAIL
+				(id,
 				"分公司",
 				"小组组长",
 				"营销代表",
@@ -2798,7 +2809,7 @@ BEGIN
 		FROM
 			dw_s_detail A,
 			ods_map_model b,
-			(SELECT distinct  机器编号,类型 FROM ods_sev_s_detail WHERE "营销管理部服务部核实情况" not like '%无记录%') c
+			(SELECT distinct 机器编号,类型 FROM ods_sev_s_detail WHERE "营销管理部服务部核实情况" not like '%无记录%') c
 		WHERE
 			a."型号"=b."型号"(+) and a."机器编号"=c."机器编号"(+);
 		COMMIT;
@@ -2838,11 +2849,11 @@ BEGIN
 			"月份",
 			sum("三一销量") as 三一销量,
 			sum("市场容量") as 市场容量,
-			case when sum("市场容量")=0 then 0 else sum(三一销量)/sum("市场容量") END  as 占有率,
+			case when sum("市场容量")=0 then 0 else sum(三一销量)/sum("市场容量") END as 占有率,
 			sum("实际销量") as 实际销量,
 			sum("销售金额") as 销售金额,
 			sum("毛利") as 毛利,
-			case when sum("销售金额")=0 then 0 else sum(毛利)/sum("销售金额") END   as 利润率
+			case when sum("销售金额")=0 then 0 else sum(毛利)/sum("销售金额") END as 利润率
 		-- Edward: 已变更字段ODS_MAP_MODEL.类型->小中大挖
 		FROM 
 			(SELECT b.小中大挖,
@@ -2850,7 +2861,7 @@ BEGIN
 				"城市01" as 城市,
 				"年份",
 				"月份",
-				sum(case when "品牌"='三一' then "销量" else 0 END)  "三一销量",
+				sum(case when "品牌"='三一' then "销量" else 0 END) "三一销量",
 				sum("销量") as 市场容量,
 				0 as 实际销量,
 				0 as 销售金额 ,
@@ -2871,7 +2882,7 @@ BEGIN
 				0 as 市场容量,
 				sum(m."数量") as 实际销量,
 				sum(m."最终用户合同金额") as 销售金额 ,
-				sum(n."销售金额"-n."三一结算金额"  +n."旧机亏损" -n."赠送配件金额" -n."信息费"-n."运费" -n."提奖"-n."招待费") as 毛利
+				sum(n."销售金额" - n."三一结算金额" + n."旧机亏损" - n."赠送配件金额" - n."信息费" - n."运费" - n."提奖" - n."招待费") as 毛利
 			FROM
 				DM_S_SALES m,
 				DW_S_PROFIT n 
@@ -2918,11 +2929,11 @@ BEGIN
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_INDUSTRY_BIG' ;
 		COMMIT;
 		INSERT INTO DM_INDUSTRY_BIG
-		SELECT '湖南' as  省,
+		SELECT '湖南' as 省,
 			大行业,
 			"年份",
 			"月份",
-			sum(case when "品牌"='三一' then "销量" else 0 END)  "三一销量",
+			sum(case when "品牌"='三一' then "销量" else 0 END) "三一销量",
 			sum("销量") as 市场容量,
 			case when sum("销量")=0 then 0 else sum(case when "品牌"='三一' then "销量" else 0 END)/sum("销量") END as 占有率
 			FROM dw_industry_big 
@@ -2966,9 +2977,10 @@ BEGIN
 			度量,
 			值,
 			综合得分)
-		SELECT a.col_ as 日期,
-			a.col__1   as 年度,
-			a.col__1_2  as 月度,
+		SELECT
+			a.col_ as 日期,
+			a.col__1 as 年度,
+			a.col__1_2 as 月度,
 			a.col__1_2_3 as 销售代表,
 			b.序号,
 			b.度量,
@@ -3251,7 +3263,7 @@ BEGIN
 				0 as 新客量,
 				0 as 面访量,
 				0 as 总里程,
-				0  as 总行程量
+				0 as 总行程量
 			FROM
 				dm_business_opp 
 			union all
@@ -3264,7 +3276,7 @@ BEGIN
 				"新客量" as 新客量,
 				0 as 面访量,
 				0 as 总里程,
-				0  as 总行程量
+				0 as 总行程量
 			FROM
 				dm_customer_new
 			union all
@@ -3277,7 +3289,7 @@ BEGIN
 				0 as 新客量,
 				"面访量" as 面访量,
 				0 as 总里程,
-				0  as 总行程量
+				0 as 总行程量
 			FROM
 				dm_customer_face
 			union all
@@ -3290,7 +3302,7 @@ BEGIN
 				0 as 新客量,
 				0 as 面访量,
 				总里程,
-				0  as 总行程量
+				0 as 总行程量
 			FROM
 				DM_S_MILEAGE
 			union all
@@ -3415,13 +3427,13 @@ BEGIN
 			substr(to_char(最后修改时间,'yyyymmdd'),5,2) as 月度,
 			to_date(substr(to_char(最后修改时间,'yyyymmdd'),1,6) ||'01','yyyymmdd') as 日期,
 			"负责人主属部门" as 分公司,
-			case when  负责人主属部门='长潭分公司' then '长沙'
-				when  负责人主属部门='江西中旺' then '南昌'
-				when instr(负责人主属部门,'分公司') >0 then substr(负责人主属部门,1,instr(负责人主属部门,'分公司')-1) else 负责人主属部门 END as 地区,
+			case when 负责人主属部门='长潭分公司' then '长沙'
+				 when 负责人主属部门='江西中旺' then '南昌'
+				 when instr(负责人主属部门,'分公司') >0 then substr(负责人主属部门,1,instr(负责人主属部门,'分公司')-1) else 负责人主属部门 END as 地区,
 			负责人 as 销售代表,
 			count(case when 竞争状态='无竞争' then 序号 END) as 无竞争丢单量,
 			count(case when 竞争状态='有竞争' then 序号 END) as 有竞争丢单量,
-			count(序号) as  丢单量
+			count(序号) as 丢单量
 		FROM
 			dw_cus_lose
 		group by
@@ -3429,9 +3441,9 @@ BEGIN
 			substr(to_char(最后修改时间,'yyyymmdd'),5,2) ,
 			to_date(substr(to_char(最后修改时间,'yyyymmdd'),1,6) ||'01','yyyymmdd') ,
 			"负责人主属部门",
-			case when  负责人主属部门='长潭分公司' then '长沙'
-				when  负责人主属部门='江西中旺' then '南昌'
-				when instr(负责人主属部门,'分公司') >0 then substr(负责人主属部门,1,instr(负责人主属部门,'分公司')-1) else 负责人主属部门 END,
+			case when 负责人主属部门='长潭分公司' then '长沙'
+				 when 负责人主属部门='江西中旺' then '南昌'
+				 when instr(负责人主属部门,'分公司') >0 then substr(负责人主属部门,1,instr(负责人主属部门,'分公司')-1) else 负责人主属部门 END,
 			负责人;
 		COMMIT;
 		--------记录报表处理的日志
@@ -3525,7 +3537,7 @@ BEGIN
 			sum(nvl(b.旧机亏损,0)) as 旧机亏损,
 			sum(nvl(b.信息费,0)) as 信息费,
 			sum(nvl(b.赠送配件金额,0)) as 赠送金额,
-			sum(nvl(b."销售金额",0)-nvl(b."三一结算金额",0)  +nvl(b."旧机亏损",0) -nvl(b."赠送配件金额",0) -nvl(b."信息费",0)-nvl(b."运费",0) -nvl(b."提奖",0)-nvl(b."招待费",0)) as 毛利额
+			sum(nvl(b."销售金额",0)-nvl(b."三一结算金额",0) + nvl(b."旧机亏损",0) - nvl(b."赠送配件金额",0) - nvl(b."信息费",0)-nvl(b."运费",0) - nvl(b."提奖",0) - nvl(b."招待费",0)) as 毛利额
 		FROM
 			dw_s_detail a,
 			dw_s_profit b,
@@ -3778,7 +3790,7 @@ BEGIN
 				0 as 新客量,
 				0 as 面访量,
 				0 as 总里程,
-				0  as 总行程量,
+				0 as 总行程量,
 				0 as 无竞争丢单量,
 				0 as 有竞争丢单量,
 				0 as 丢单量
@@ -3826,7 +3838,7 @@ BEGIN
 				0 as "新客量",
 				0 as "面访量", 
 				0 as 总里程,
-				0  as 总行程量,
+				0 as 总行程量,
 				"无竞争丢单量",
 				"有竞争丢单量",
 				"丢单量"
@@ -4162,12 +4174,12 @@ BEGIN
 				 when instr("定位详情",'新疆')>0 then '新疆'
 				 when instr("定位详情",'西藏自治区')>0 then '西藏' else "定位详情" END as 省,
 			case when instr("定位详情",'省')>0 then 
-				( case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3)
-					   when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'自治州')-instr("定位详情",'省')+2)
-					   else  substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'市')-instr("定位详情",'省')-1) END)
+				(case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3)
+					  when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'自治州')-instr("定位详情",'省')+2)
+					  else substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'市')-instr("定位详情",'省')-1) END)
 				 when instr("定位详情",'广西壮族自治区')>0 then
-				  ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
 				 when instr("定位详情",'上海')>0 then '上海'
 				 when instr("定位详情",'北京')>0 then '北京'
 				 when instr("定位详情",'重庆')>0 then '重庆'
@@ -4179,22 +4191,23 @@ BEGIN
 				 when instr("定位详情",'Tamil')>0 then 'Tamil'
 				 when instr("定位详情",'Odisha')>0 then 'Odisha'
 				 when instr("定位详情",'宁夏回族自治区')>0 then
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END )
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
 				 when instr("定位详情",'内蒙古自治区')>0 then
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
 				 when instr("定位详情",'新疆维吾尔自治区')>0 then 
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END )
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
 				 when instr("定位详情",'西藏自治区')>0 then
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
-				 else "定位详情" END  as 市,
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
+				 else "定位详情" END as 市,
 			case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3) 
-				 when  instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治州')+3)
+				 when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治州')+3)
 				 when instr("定位详情",'市')>0 then substr( "定位详情",instr("定位详情",'市')+1)
-				 else "定位详情" END as 区县,"定位详情",
+				 else "定位详情" END as 区县,
+			"定位详情",
 			to_date(substr(to_char("更新时间",'YYYYMMDD'),1,6)||'01','YYYY-MM-DD') as 更新时间,
 			substr(to_char("更新时间",'YYYYMMDD'),1,4)||'W'||to_char("更新时间",'ww') as 周
 		FROM
@@ -4205,7 +4218,7 @@ BEGIN
 				 when instr("机型",'H')>0 then substr("机型",1,instr("机型",'H')-1)
 				 when instr("机型",'W')>0 then substr("机型",1,instr("机型",'W')-1)
 				 when "机型"='SY485S1I3K' then 'SY485'
-				 when instr("机型",'U')>0 then substr("机型",1,instr("机型",'U')-1) else "机型" END ,
+				 when instr("机型",'U')>0 then substr("机型",1,instr("机型",'U')-1) else "机型" END,
 			case when instr("定位详情",'省')>0 then substr( "定位详情",1,instr("定位详情",'省')-1)
 				 when instr("定位详情",'广西壮族自治区')>0 then '广西'
 				 when instr("定位详情",'上海')>0 then '上海'
@@ -4223,12 +4236,12 @@ BEGIN
 				 when instr("定位详情",'新疆')>0 then '新疆'
 				 when instr("定位详情",'西藏自治区')>0 then '西藏' else "定位详情" END,
 			case when instr("定位详情",'省')>0 then 
-				( case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3)
-					   when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'自治州')-instr("定位详情",'省')+2)
-					   else  substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'市')-instr("定位详情",'省')-1) END)
+				(case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3)
+					  when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'自治州')-instr("定位详情",'省')+2)
+					  else substr( "定位详情",instr("定位详情",'省')+1,instr("定位详情",'市')-instr("定位详情",'省')-1) END)
 				 when instr("定位详情",'广西壮族自治区')>0 then
-				  ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
 				 when instr("定位详情",'上海')>0 then '上海'
 				 when instr("定位详情",'北京')>0 then '北京'
 				 when instr("定位详情",'重庆')>0 then '重庆'
@@ -4240,26 +4253,27 @@ BEGIN
 				 when instr("定位详情",'Tamil')>0 then 'Tamil'
 				 when instr("定位详情",'Odisha')>0 then 'Odisha'
 				 when instr("定位详情",'宁夏回族自治区')>0 then
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END )
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
 				 when instr("定位详情",'内蒙古自治区')>0 then
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
 				 when instr("定位详情",'新疆维吾尔自治区')>0 then 
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END )
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
 				 when instr("定位详情",'西藏自治区')>0 then
-				 ( case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
-					   else  substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区'))END)
-				 else "定位详情" END ,
-				 case when  instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3)
+				(case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'自治州')-instr("定位详情",'自治区')+2)
+					  else substr( "定位详情",instr("定位详情",'自治区')+3,instr("定位详情",'市')-instr("定位详情",'自治区')) END)
+				 else "定位详情" END,
+			case when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治区')+3)
 				 when instr("定位详情",'市')>0 then substr( "定位详情",instr("定位详情",'市')+1)
 				 else "定位详情" END,
-				case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3) 
-				 when  instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治州')+3)
+			case when instr("定位详情",'省辖县')>0 then substr( "定位详情",instr("定位详情",'省辖县')+3) 
+				 when instr("定位详情",'自治州')>0 then substr( "定位详情",instr("定位详情",'自治州')+3)
 				 when instr("定位详情",'市')>0 then substr( "定位详情",instr("定位详情",'市')+1)
-				 else "定位详情" END,"定位详情",
-			to_date(substr(to_char("更新时间",'YYYYMMDD'),1,6)||'01','YYYY-MM-DD') ,
+				 else "定位详情" END,
+			"定位详情",
+			to_date(substr(to_char("更新时间",'YYYYMMDD'),1,6)||'01','YYYY-MM-DD'),
 			substr(to_char("更新时间",'YYYYMMDD'),1,4)||'W'||to_char("更新时间",'ww');
 
 		COMMIT;
@@ -4268,7 +4282,7 @@ BEGIN
 			values('DM_S_HNZW_GSQX',SYSDATE,'DM_S_HNZW_GSQX数据更新完成','日志记录');
 		COMMIT;
 
-	EXCEPTION 
+	EXCEPTION
 		WHEN OTHERS THEN
 			-------记录报表处理的日志
 			prc_wlf_sys_writelog('DM_S_HNZW_GSQX',SYSDATE,
@@ -4299,15 +4313,15 @@ BEGIN
 			a."机型",
 			case when a."机型" in('SY55','SY60','SY70','SY75','SY85','SY95','SY125','SY135','SY155','SY65','SY115','SY150','SY35') then '小挖'
 				 when a."机型" in('SY195','SY205','SY215','SY225','SY245','SY265','SY285','SY305','SY230','SY240','SY235','SY330','SY335') then '中挖'
-				 else '大挖' END  as 类型,
+				 else '大挖' END as 类型,
 			a."总工时",
-			 case when b."总工时"<=4000 then '4000小时以内'
+			case when b."总工时"<=4000 then '4000小时以内'
 				 when b."总工时">4000 and b."总工时"<=7000 then '4000~7000小时'
 				 when b."总工时">7000 and b."总工时"<=10000 then '7000~10000小时'
 				 when b."总工时">10000 and b."总工时"<=13000 then '10000~13000小时'
 				 when b."总工时">13000 and b."总工时"<=15000 then '13000~15000小时'
 				 when b."总工时">15000 and b."总工时"<=20000 then '15000~20000小时'
-				 when  b."总工时">20000 then '20000小时以上' END as 工时分段,
+				 when b."总工时">20000 then '20000小时以上' END as 工时分段,
 			a."工时",
 			a."省",
 			a."市",
@@ -4350,7 +4364,7 @@ BEGIN
 		COMMIT;
 
 		INSERT INTO
-			DW_EXC_LEDGER   
+			DW_EXC_LEDGER
 		SELECT
 			a."机号",
 			case when instr("设备型号",'C')>0 then substr("设备型号",1,instr("设备型号",'C')-1)
@@ -4367,7 +4381,7 @@ BEGIN
 				 when b."总工时">10000 and b."总工时"<=13000 then '10000~13000小时'
 				 when b."总工时">13000 and b."总工时"<=15000 then '13000~15000小时'
 				 when b."总工时">15000 and b."总工时"<=20000 then '15000~20000小时'
-				 when  b."总工时">20000 then '20000小时以上' END as 工时分段,
+				 when b."总工时">20000 then '20000小时以上' END as 工时分段,
 			b."总工时",
 			b."当月工时",
 			b."当年工时",
@@ -4489,7 +4503,7 @@ BEGIN
 			总逾期期数 as "总逾期款2",
 			"逾期罚息"
 		FROM
-			ods_exc_ledger;  
+			ods_exc_ledger;
 		COMMIT;
 
 		--------记录报表处理的日志
@@ -4555,7 +4569,7 @@ BEGIN
 			"实际还款时间",
 			"最后还款时间"
 		FROM
-			ods_acc_rec;  
+			ods_acc_rec;
 		COMMIT;
 		--------记录报表处理的日志
 		INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
