@@ -21,7 +21,6 @@ CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 	V_MSG				VARCHAR2(300);
 
 BEGIN
-
 	--所有年份小行业数据
 	QTY_COM := 0 ;
 	SELECT count(1)
@@ -349,6 +348,7 @@ BEGIN
 
 
 	--丢单报告对象导出结果（无竞争丢单量）
+	-- Edward0604: INC_LOSE_NO_COM, ODS_LOSE_NO_COM 省份已添加
 	QTY_COM := 0 ;
 	SELECT count(1)
 	into QTY_COM
@@ -365,8 +365,8 @@ BEGIN
 			COMMIT;
 
 			------插入前，先将源ODS表中存在的数据备份日志表中
-				INSERT INTO ETL_LOG(TABLE_NAME,CUL01,CUL02,CUL03,CUL04,CUL05,CURRENT_DATE,LOG_MSG,LOG_TYPE)
-				SELECT V_TABLE_NAME,
+			INSERT INTO ETL_LOG(TABLE_NAME,CUL01,CUL02,CUL03,CUL04,CUL05,CURRENT_DATE,LOG_MSG,LOG_TYPE)
+			SELECT V_TABLE_NAME,
 				"负责人",
 				"序号",
 				"负责人主属部门",
@@ -408,7 +408,8 @@ BEGIN
 				"归属部门",
 				"创建时间",
 				"最后修改人",
-				"最后修改时间")
+				"最后修改时间",
+				"省份")
 			SELECT
 				"客户名称",
 				"商机名称",
@@ -432,7 +433,8 @@ BEGIN
 				"归属部门",
 				"创建时间",
 				"最后修改人",
-				"最后修改时间"
+				"最后修改时间",
+				"省份"
 			FROM
 				INC_LOSE_NO_COM a;
 			COMMIT;
@@ -2603,7 +2605,32 @@ BEGIN
 		--------删除对象对应的DM表DW_CUS_LOSE
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DW_CUS_LOSE' ;
 		COMMIT;
+		-- Edward0604: DW_CUS_LOSE省份已添加
 		INSERT INTO DW_CUS_LOSE
+			(客户名称,
+			商机名称,
+			购买品牌,
+			型号,
+			成交日期,
+			成交方式,
+			成交价格,
+			首付比例,
+			丢单原因,
+			外部负责人,
+			锁定状态,
+			相关团队,
+			创建人,
+			负责人,
+			序号,
+			负责人主属部门,
+			业务类型,
+			生命状态,
+			归属部门,
+			创建时间,
+			最后修改人,
+			最后修改时间,
+			竞争状态,
+			省份)
 		SELECT
 			"客户名称",
 			"商机名称",
@@ -2627,7 +2654,8 @@ BEGIN
 			"创建时间",
 			"最后修改人",
 			"最后修改时间",
-			'有竞争' as 竞争状态
+			'有竞争' as 竞争状态,
+			'省份'
 		FROM
 			ods_lose_com
 		union all
@@ -2654,7 +2682,8 @@ BEGIN
 			"创建时间",
 			"最后修改人",
 			"最后修改时间",
-			'无竞争' as 竞争状态
+			'无竞争' as 竞争状态,
+			'省份'
 		FROM
 			ods_lose_no_com;		
 		COMMIT;
@@ -3273,8 +3302,20 @@ BEGIN
 		--------删除对象对应的DM表DM_S_AAOM_PRE
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_PRE' ;
 		COMMIT;
-		INSERT INTO
-			DM_S_AAOM_PRE
+		-- Edward0604: DM_S_AAOM_PRE省份已添加
+		INSERT INTO DM_S_AAOM_PRE
+			(年度,
+			月度,
+			日期,
+			分公司,
+			地区,
+			销售代表,
+			商机量,
+			新客量,
+			面访量,
+			总里程,
+			总行程量,
+			省份) -- 添加省份
 		SELECT
 			a.年度,
 			a.月度,
@@ -3293,7 +3334,8 @@ BEGIN
 			a.新客量,
 			a.面访量,
 			a.总里程,
-			a.总行程量
+			a.总行程量,
+			b.省份 -- 添加省份
 		FROM
 			DM_S_PRESALES a,
 			DW_DEPT_EMP b
