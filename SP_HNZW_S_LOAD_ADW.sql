@@ -238,7 +238,7 @@ BEGIN
 			WHEN OTHERS THEN
 			 	-------记录报表处理的日志
 				prc_wlf_sys_writelog(V_TABLE_NAME,SYSDATE,
-					'发生系统错误 ： 错误代码 ' || SQLCODE( ) || '   错误信息：' ||SQLERRM( ) ,'错误日志记录');\
+					'发生系统错误 ： 错误代码 ' || SQLCODE( ) || '   错误信息：' ||SQLERRM( ) ,'错误日志记录');
 		END;
 	END IF;
 
@@ -721,7 +721,7 @@ BEGIN
 				"职级",
 				"省份", --更名
 				"司龄", --更名
-				"工作状态"
+				"工作状态",
 				time_stamp)
 			SELECT
 				"序号",
@@ -782,7 +782,7 @@ BEGIN
 					 when instr(科室,'办') >0 and instr(科室,'江西')>0 then substr(科室,instr(科室,'江西')+2,instr(科室,'办')-instr(科室,'江西')-2) 
 					 when instr(科室,'办事处') >0 then substr(科室,1,instr(科室,'办事处')-1) else 科室 END,
 				工作状态,
-				SYSDATE as time_stamp，
+				SYSDATE as time_stamp,
 				省份 -- 新增的省份字段 INSERT进DW_DEPT_EMP
 			FROM ODS_S_PERSON;
 			COMMIT;
@@ -1232,7 +1232,7 @@ BEGIN
 			----------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
 				values(V_TABLE_NAME,SYSDATE,V_OBJECT_NAME || '数据更新开始','日志记录');
-			COMMIT
+			COMMIT;
 
 			------插入前，先将源ODS表中存在的数据备份日志表中
 			INSERT INTO ETL_LOG(TABLE_NAME,CUL01,CUL02,CUL03,CUL04,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -1247,12 +1247,12 @@ BEGIN
 
 			-- Edward: 已变更字段INC_MAP_MODEL, ODS_MAP_MODEL
 			FROM ODS_MAP_MODEL a
-			WHERE exists(SELECT 1 FROM INC_MAP_MODEL  WHERE 类型=a.小中大挖 and 型号=a.型号 );
+			WHERE exists(SELECT 1 FROM INC_MAP_MODEL  WHERE 小中大挖=a.小中大挖 and 型号=a.型号 );
 			COMMIT;
 
 			----删除ODS_MAP_MODEL中记录；
 			DELETE FROM ODS_MAP_MODEL a
-			WHERE exists(SELECT 1 FROM INC_MAP_MODEL  WHERE 类型=a.小中大挖 and 型号=a.型号);
+			WHERE exists(SELECT 1 FROM INC_MAP_MODEL  WHERE 小中大挖=a.小中大挖 and 型号=a.型号);
 			COMMIT;
 
 			----插入增量表中数据
@@ -1721,7 +1721,8 @@ BEGIN
 
 			--------记录报表处理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
-				values(V_TABLE_N
+				values(V_TABLE_NAME,SYSDATE, 'dw_s_profit数据更新完成','日志记录');
+			COMMIT;
 
 		EXCEPTION 
 			WHEN OTHERS THEN
@@ -1951,7 +1952,7 @@ BEGIN
 	QTY_COM  := 0 ;
 	SELECT count(1)
 	into QTY_COM
-	FROM INC_EXC_LEDGER
+	FROM INC_EXC_LEDGER;
 
 	IF QTY_COM>0 then 
 
@@ -2716,21 +2717,54 @@ BEGIN
 		-- Edward: DW_S_DETAIL ODS_MAP_MODEL 已修改
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_SALES' ;
 		COMMIT;
-		INSERT INTO DM_S_SALES 
+		INSERT INTO DM_S_SALES
+			(订单类型,
+			DMS,
+			代理商,
+			省份,
+			地区,
+			城市,
+			销售代表,
+			新老客户,
+			合同单位,
+			销售方式,
+			类型,
+			大行业,
+			小行业,
+			型号,
+			机器编号,
+			是否以旧换新,
+			以旧换新数量,
+			证件号码,
+			住址,
+			联系电话,
+			数量,
+			交机时间,
+			交货地点,
+			最终用户合同金额,
+			几成几年,
+			分期期数,
+			结算价,
+			折让金额万,
+			折让后价格,
+			赠送配件合计金额,
+			销售月份,
+			销售年份,
+			销售月份ZW)
 		SELECT
 			"订单类型",
 			dms,
 			"代理商",
 			"省份",
-			"地区",
-			case when "地区" ='长潭' then '长沙'
-				 when "地区" ='大客户部' then '长沙'
-				 when "地区" ='邵阳东' then '邵阳' 
-				 when "地区" ='邵阳西' then '邵阳' 
-				 when "地区" ='总部' then '湘潭' 
-				 when "地区" ='吉首、张家界' then '张家界'
-				 when "地区" ='吉首' then '张家界'
-				 else "地区" END  "城市",
+			"所属分公司",
+			case when "所属分公司" ='长潭' then '长沙'
+				 when "所属分公司" ='大客户部' then '长沙'
+				 when "所属分公司" ='邵阳东' then '邵阳' 
+				 when "所属分公司" ='邵阳西' then '邵阳' 
+				 when "所属分公司" ='总部' then '湘潭' 
+				 when "所属分公司" ='吉首、张家界' then '张家界'
+				 when "所属分公司" ='吉首' then '张家界'
+				 else "所属分公司" END AS "城市",
 			a."营销代表",
 			case when c.类型='老客户再次购机' then '老客户' else a."客户类型" END as "客户类型",
 			a."合同单位",
@@ -2750,7 +2784,7 @@ BEGIN
 			"交货地址",
 			"合同金额",
 			"贷款成数", -- Edward: 新增字段
-			"贷款期数", -- Edward: 新增字段
+			--"贷款期数", -- Edward: 新增字段, FIX: 等DW_S_SALES修改后添加上
 			"分期期数",
 			"结算金额",
 			"销售折让金额",
@@ -2759,12 +2793,12 @@ BEGIN
 			"销售月份",
 			"销售年份",
 			"销售月份ZW"
-		FROM 
+		FROM
 			dw_s_detail A,
 			ods_map_model b,
 			(SELECT distinct  机器编号,类型 FROM ods_sev_s_detail WHERE "营销管理部服务部核实情况" not like '%无记录%') c
 		WHERE
-			a."型号"=b."型号"(+) and a."机器编号"=c."机器编号"(+); 
+			a."型号"=b."型号"(+) and a."机器编号"=c."机器编号"(+);
 		COMMIT;
 
 		--------记录报表处理的日志
@@ -2772,7 +2806,7 @@ BEGIN
 			values('DM_S_SALES',SYSDATE,'DM_S_SALES数据更新完成','日志记录');
 		COMMIT;
 
-	EXCEPTION 
+	EXCEPTION
 		WHEN OTHERS THEN
 		-------记录报表处理的日志
 			prc_wlf_sys_writelog('DM_S_SALES',SYSDATE,
@@ -2796,7 +2830,7 @@ BEGIN
 		INSERT INTO DM_IND_SYZYL 
 		SELECT
 			小行业,
-			"类型",
+			"小中大挖",
 			"城市",
 			"年份",
 			"月份",
@@ -2847,8 +2881,9 @@ BEGIN
 				m."小行业",
 				m."销售月份",
 				m."销售年份")
-		GROUP BY 小行业,
-			"类型",
+		GROUP BY
+			"小行业",
+			"小中大挖",
 			"城市",
 			"年份",
 			"月份"; 
@@ -3423,32 +3458,34 @@ BEGIN
 		COMMIT;
 
 		--------删除对象对应的DM表DM_S_AAOM_SR01
-		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_SR01' ;
+		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_SR01';
 		COMMIT;
+
 		-- Edward: 已变更字段DM_S_AAOM_SR01
-		INSERT INTO DM_S_AAOM_SR01  ('年度',
-			'月度',
-			'日期',
-			'省份',
-			'所属分公司',
-			'客户类型',
-			'合同单位',
-			'销售方式',
-			'机器编号',
-			'CRM过账交机时间',
-			'型号',
-			'地区',
-			'营销代表',
-			'合同金额',
-			'数量',
-			'以旧换新数量',
-			'旧机亏损',
-			'信息费',
-			'赠送金额',
-			'毛利额')
+		INSERT INTO DM_S_AAOM_SR01
+			(年度,
+			月度,
+			日期,
+			省份,
+			所属分公司,
+			客户类型,
+			合同单位,
+			销售方式,
+			机器编号,
+			CRM过账交机时间,
+			型号,
+			地区,
+			营销代表,
+			合同金额,
+			数量,
+			以旧换新数量,
+			旧机亏损,
+			信息费,
+			赠送金额,
+			毛利额)
 		-- Edward: DW_S_DETAIL 已修改字段
 		SELECT
-			a.销售年份  as 年度,
+			a.销售年份 as 年度,
 			case when instr(销售月份SY,'月')>0 then 
 					(case when length(substr(销售月份SY,1,instr(销售月份SY,'月')-1))=1 then '0'||substr(销售月份SY,1,instr(销售月份SY,'月')-1)
 					 else substr(销售月份SY,1,instr(销售月份SY,'月')-1) END)
@@ -3478,15 +3515,15 @@ BEGIN
 				when a.所属分公司='吉首、张家界' then '张家界'
 				when a.所属分公司='邵阳西' then '邵阳'
 				when a.所属分公司='邵阳东' then '邵阳'
-				else a.所属分公司 END as 所属分公司,
+				else a.所属分公司 END as 地区,
 			a.营销代表,
 			sum(nvl(a.合同金额,0)) as 合同金额,
 			sum(nvl(a.数量,0)) as 数量,
 			sum(case when 以旧换新 ='是' then nvl(a.数量,0) else 0 END) as 以旧换新数量,
 			sum(nvl(b.旧机亏损,0)) as 旧机亏损,
 			sum(nvl(b.信息费,0)) as 信息费,
-			sum(nvl(b.赠送金额,0)) as 赠送金额,
-			sum(nvl(b."合同金额",0)-nvl(b."三一结算金额",0)  +nvl(b."旧机亏损",0) -nvl(b."赠送金额",0) -nvl(b."信息费",0)-nvl(b."运费",0) -nvl(b."提奖",0)-nvl(b."招待费",0)) as 毛利额
+			sum(nvl(b.赠送配件金额,0)) as 赠送金额,
+			sum(nvl(b."销售金额",0)-nvl(b."三一结算金额",0)  +nvl(b."旧机亏损",0) -nvl(b."赠送配件金额",0) -nvl(b."信息费",0)-nvl(b."运费",0) -nvl(b."提奖",0)-nvl(b."招待费",0)) as 毛利额
 		FROM
 			dw_s_detail a,
 			dw_s_profit b,
@@ -3702,13 +3739,13 @@ BEGIN
 			a.月度,
 			a.日期,
 			a.地区,
-			a.销售代表,
-			sum(a.销售金额) as 销售金额,
+			a.营销代表,
+			sum(a.合同金额) as 合同金额,
 			sum(a.数量) as 数量,
 			sum(a.以旧换新数量) as 以旧换新数量,
 			sum(a.旧机亏损) as 旧机亏损,
 			sum(a.信息费) as 信息费,
-			sum(a.赠送配件金额) as 赠送配件金额,
+			sum(a.赠送金额) as 赠送金额,
 			sum(a.毛利额) as 毛利额,
 			sum(a.商机量) as 商机量,
 			sum(a.新客量) as 新客量,
@@ -3799,7 +3836,7 @@ BEGIN
 			a.月度,
 			a.日期,
 			a.地区,
-			a.销售代表;
+			a.营销代表;
 		COMMIT;
 		--------记录报表处理的日志
 		INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
@@ -4077,7 +4114,7 @@ BEGIN
 			-------记录报表处理的日志
 			prc_wlf_sys_writelog('DM_WATERFALL_PROFIT',SYSDATE,
 				'发生系统错误 ： 错误代码 ' || SQLCODE( ) || '   错误信息：' ||SQLERRM( ) ,'错误日志记录');
-	END
+	END;
 
 
 
