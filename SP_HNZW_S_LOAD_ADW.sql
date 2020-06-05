@@ -1,17 +1,35 @@
 /*
 Edward0603:
 	-indent修改
-	-已修改表格：
-		INC, ODS, DW, _S_DETAIL
+	-已修改表格:
+		INC_S_DETAIL
+		ODS_S_DETAIL
+		DW_S_DETAIL
 		ODS_CITY_BC
 		DM_S_AAOM_SR01
-		INC, ODS, _MAP_MODEL
+		INC_MAP_MODEL
+		ODS_MAP_MODEL
 		DM_S_AAOM_SR
 
-		INC, ODS, _S_PERSON
+		INC_S_PERSON
+		ODS_S_PERSON 
 		DW_DEPT_EMP
-Edward0406:
+		DM_S_AAOM_PRE
+Edward0604:
 	-bug fix: compiles now
+Edward0605:
+	-已修改表格:
+		INC_LOSE_NO_COM
+		ODS_LOSE_NO_COM
+		INC_LOSE_COM
+		ODS_LOSE_COM
+		DW_CUS_LOSE
+		DM_S_AAOM_LOSE
+		DM_S_AAOM
+GZY0605: 
+	-已修改表格:
+		dw_service_orders
+		服务订单
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 	------------申明变量
@@ -499,6 +517,7 @@ BEGIN
 			COMMIT;
 
 			----插入增量表中数据
+			-- Edward0605: INC_LOSE_COM, ODS_LOSE_COM添加省份
 			INSERT INTO ODS_LOSE_COM
 				("客户名称",
 				"商机名称",
@@ -522,7 +541,8 @@ BEGIN
 				"归属部门",
 				"创建时间",
 				"最后修改人",
-				"最后修改时间")
+				"最后修改时间",
+				"省份")
 			SELECT
 				"客户名称",
 				"商机名称",
@@ -546,7 +566,8 @@ BEGIN
 				"归属部门",
 				"创建时间",
 				"最后修改人",
-				"最后修改时间"
+				"最后修改时间",
+				"省份"
 			FROM
 				INC_LOSE_COM a;
 			COMMIT;
@@ -2390,7 +2411,6 @@ BEGIN
 				交机日期,
 				设备型号,
 				订单类型,
-				省份,-----gzy:增加字段
 				服务网点,
 				SYSDATE,
 				V_OBJECT_NAME || '数据备份处理',
@@ -2473,15 +2493,29 @@ BEGIN
 			EXECUTE IMMEDIATE 'TRUNCATE TABLE dw_service_orders';
 			COMMIT;
 
-			INSERT INTO
-				dw_service_orders
-			SELECT "订单完工时间",
+			INSERT INTO dw_service_orders
+				(订单完工时间,
+				服务订单号,
+				客户,
+				订单状态,
+				机号,
+				订单类型,
+				服务网点,
+				服务工程师,
+				故障描述,
+				创建时间,
+				保养节点,
+				工程师技能等级,
+				现场完工时间,
+				累计运行时间,
+				省份)
+			SELECT
+				"订单完工时间",
 				"服务订单号",
 				"客户",
 				"订单状态",
 				"设备编号" as "机号",
 				"订单类型",
-				"省份",-----gzy:增加字段
 				"服务网点",
 				"服务工程师",
 				"故障描述",
@@ -2489,7 +2523,8 @@ BEGIN
 				"保养节点",
 				"工程师技能等级",
 				"现场完工时间",
-				"累计运行时间"
+				"累计运行时间",
+				"省份"-----gzy:增加字段
 			FROM
 				"服务订单";
 			COMMIT;
@@ -3424,8 +3459,19 @@ BEGIN
 		--------删除对象对应的DM表DM_S_AAOM_LOSE
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_LOSE' ;
 		COMMIT;
-		INSERT INTO
-			DM_S_AAOM_LOSE
+
+		--Edward0605: DM_S_AAOM_LOSE添加省份
+		INSERT INTO DM_S_AAOM_LOSE
+			(年度,
+			月度,
+			日期,
+			分公司,
+			地区,
+			销售代表,
+			无竞争丢单量,
+			有竞争丢单量,
+			丢单量,
+			省份)
 		SELECT
 			substr(to_char(最后修改时间,'yyyymmdd'),1,4) as 年度,
 			substr(to_char(最后修改时间,'yyyymmdd'),5,2) as 月度,
@@ -3437,7 +3483,8 @@ BEGIN
 			负责人 as 销售代表,
 			count(case when 竞争状态='无竞争' then 序号 END) as 无竞争丢单量,
 			count(case when 竞争状态='有竞争' then 序号 END) as 有竞争丢单量,
-			count(序号) as 丢单量
+			count(序号) as 丢单量,
+			省份
 		FROM
 			dw_cus_lose
 		group by
@@ -3450,6 +3497,7 @@ BEGIN
 				 when instr(负责人主属部门,'分公司') >0 then substr(负责人主属部门,1,instr(负责人主属部门,'分公司')-1) else 负责人主属部门 END,
 			负责人;
 		COMMIT;
+
 		--------记录报表处理的日志
 		INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
 			values('DM_S_AAOM_LOSE',SYSDATE,'DM_S_AAOM_LOSE数据更新完成','日志记录');
@@ -3751,7 +3799,31 @@ BEGIN
 		--------删除对象对应的DM表DM_S_AAOM
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM' ;
 		COMMIT;
+		-- Edward0605: DM_S_AAOM添加省份
 		INSERT INTO DM_S_AAOM
+			(年度,
+			月度,
+			日期,
+			地区,
+			销售代表,
+			销售金额,
+			数量,
+			以旧换新数量,
+			旧机亏损,
+			信息费,
+			赠送配件金额,
+			毛利额,
+			商机量,
+			新客量,
+			面访量,
+			总里程,
+			总行程量,
+			无竞争丢单量,
+			有竞争丢单量,
+			参与量,
+			覆盖量,
+			丢单量,
+			省份)
 		SELECT
 			a.年度,
 			a.月度,
@@ -3774,9 +3846,10 @@ BEGIN
 			sum(a.有竞争丢单量) as 有竞争丢单量,
 			sum(nvl(a.数量,0)+nvl(a.有竞争丢单量,0)) as 参与量,
 			sum(nvl(a.数量,0)+nvl(a.丢单量,0)) as 覆盖量,
-			sum(a.丢单量) as 丢单量
+			sum(a.丢单量) as 丢单量,
+			a.省份 -- 添加省份
+		-- Edward0605: DM_S_AAOM_SR, DM_S_AAOM_LOSE, DM_S_AAOM_PRE
 		FROM
-			-- Edward: 已变更字段 DM_S_AAOM_SR
 			(SELECT
 				to_char("年度") as "年度",
 				"月度",
@@ -3797,7 +3870,8 @@ BEGIN
 				0 as 总行程量,
 				0 as 无竞争丢单量,
 				0 as 有竞争丢单量,
-				0 as 丢单量
+				0 as 丢单量,
+				"省份"
 			FROM
 				dm_s_aaom_sr
 			UNION ALL
@@ -3821,7 +3895,8 @@ BEGIN
 				总行程量,
 				0 as 无竞争丢单量,
 				0 as 有竞争丢单量,
-				0 as 丢单量
+				0 as 丢单量,
+				"省份"
 			FROM
 				dm_s_aaom_pre
 			UNION ALL
@@ -3845,7 +3920,8 @@ BEGIN
 				0 as 总行程量,
 				"无竞争丢单量",
 				"有竞争丢单量",
-				"丢单量"
+				"丢单量",
+				"省份"
 			FROM
 				dm_s_aaom_lose
 			) a
@@ -3854,8 +3930,10 @@ BEGIN
 			a.月度,
 			a.日期,
 			a.地区,
-			a.营销代表;
+			a.营销代表,
+			a.省份;
 		COMMIT;
+
 		--------记录报表处理的日志
 		INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
 			values('DM_S_AAOM',SYSDATE,'DM_S_AAOM数据更新完成','日志记录');
@@ -3883,8 +3961,30 @@ BEGIN
 		--------删除对象对应的DM表DM_S_AAOM_COM
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_COM' ;
 		COMMIT;
-		INSERT INTO
-			DM_S_AAOM_COM
+
+		-- Edward0605: DM_S_AAOM_COM添加省份
+		INSERT INTO DM_S_AAOM_COM
+			(年度,
+			月度,
+			日期,
+			地区,
+			销售金额,
+			数量,
+			以旧换新数量,
+			旧机亏损,
+			信息费,
+			赠送配件金额,
+			毛利额,
+			商机量,
+			新客量,
+			面访量,
+			无竞争丢单量,
+			有竞争丢单量,
+			参与量,
+			覆盖量,
+			丢单量,
+			小行业市场容量,
+			省份)
 		SELECT
 			a."年度",
 			a."月度",
@@ -3905,6 +4005,7 @@ BEGIN
 			"参与量",
 			"覆盖量",
 			"丢单量",
+			"省份", --DM_S_AAOM省份
 			d.小行业市场容量
 		FROM
 			(SELECT
@@ -3912,7 +4013,7 @@ BEGIN
 				"月度",
 				"日期",
 				"地区",
-				sum("销售金额") as 销售金额,
+				sum("销售金额") as "销售金额",
 				sum("数量") as "数量",
 				sum("以旧换新数量") as "以旧换新数量",
 				sum("旧机亏损") as "旧机亏损",
@@ -3926,14 +4027,16 @@ BEGIN
 				sum("有竞争丢单量") as "有竞争丢单量",
 				sum("参与量") as "参与量",
 				sum("覆盖量") as "覆盖量",
-				sum("丢单量") as "丢单量"
+				sum("丢单量") as "丢单量",
+				"省份"
 			FROM
 				dm_s_aaom
 			group by 
 				"年度",
 				"月度",
 				"日期",
-				"地区") a,
+				"地区",
+				"省份") a,
 			DM_S_AAOM_SMALL d
 		WHERE
 			a.年度 = d.年度 and a.月度 = d.月度 and a.地区 = d.地区;
@@ -3965,7 +4068,7 @@ BEGIN
 		COMMIT;
 
 		--------删除对象对应的DM表DM_S_AAOM_FUNNEL
-		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_FUNNEL' ;
+		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_FUNNEL';
 		COMMIT;
 		INSERT INTO
 			DM_S_AAOM_FUNNEL
