@@ -19,13 +19,17 @@ Edward0604:
 	-bug fix: compiles now
 Edward0605:
 	-已修改表格:
-		INC_LOSE_NO_COM
-		ODS_LOSE_NO_COM
-		INC_LOSE_COM
-		ODS_LOSE_COM
-		DW_CUS_LOSE
-		DM_S_AAOM_LOSE
-		DM_S_AAOM
+		INC_LOSE_NO_COM +省份
+		ODS_LOSE_NO_COM +省份
+		INC_LOSE_COM +省份
+		ODS_LOSE_COM +省份
+		DW_CUS_LOSE +省份
+		DM_S_AAOM_LOSE +省份
+		DM_S_AAOM +省份
+		DM_S_AAOM_COM +省份
+		DM_S_AAOM_FUNNEL +省份
+	-need fix:
+		DM_SALESMAN_SCORE 脚本中无内容
 GZY0605: 
 	-已修改表格:
 		dw_service_orders
@@ -4070,8 +4074,17 @@ BEGIN
 		--------删除对象对应的DM表DM_S_AAOM_FUNNEL
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_AAOM_FUNNEL';
 		COMMIT;
-		INSERT INTO
-			DM_S_AAOM_FUNNEL
+		-- Edward0605: 添加省份
+		INSERT INTO DM_S_AAOM_FUNNEL
+			(年度,
+			月度,
+			日期,
+			地区,
+			销售代表,
+			序号,
+			度量,
+			值,
+			省份)
 		SELECT
 			a."年度",
 			a."月度",
@@ -4083,7 +4096,8 @@ BEGIN
 			case when b.度量='新增客户量' then a.新客量
 				 when b.度量='面访量' then a.面访量
 				 when b.度量='商机量' then a.商机量
-				 when b.度量='成交量' then a.数量 else 0 END as 值
+				 when b.度量='成交量' then a.数量 else 0 END as 值,
+			a."省份"
 		FROM
 			dm_s_aaom a,
 			dim_funnel b
