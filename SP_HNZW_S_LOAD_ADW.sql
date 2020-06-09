@@ -30,10 +30,15 @@ Edward0605:
 		DM_S_AAOM_FUNNEL +省份
 	-need fix:
 		DM_SALESMAN_SCORE 脚本中无内容
-GZY0605: 
+gzy0605: 
 	-已修改表格:
 		dw_service_orders
 		服务订单
+gzy0609
+	-已修改表:
+		ODS_SEV_S_DETAIL
+	
+	
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 	------------申明变量
@@ -2512,7 +2517,7 @@ BEGIN
 				工程师技能等级,
 				现场完工时间,
 				累计运行时间,
-				省份)
+				省份)		-----gzy:增加字段
 			SELECT
 				"订单完工时间",
 				"服务订单号",
@@ -2528,7 +2533,7 @@ BEGIN
 				"工程师技能等级",
 				"现场完工时间",
 				"累计运行时间",
-				"省份"-----gzy:增加字段
+				"省份"	-----gzy:增加字段
 			FROM
 				"服务订单";
 			COMMIT;
@@ -2598,6 +2603,7 @@ BEGIN
 			----插入增量表中数据
 			INSERT INTO ODS_SEV_S_DETAIL
 				(id,
+				"省份",  -----gzy:添加字段
 				"分公司",
 				"小组组长",
 				"营销代表",
@@ -2613,6 +2619,7 @@ BEGIN
 				"统计月份",
 				TIME_STAMP)
 			SELECT id,
+				"省份",	-----gzy:添加字段
 				"分公司",
 				"小组组长",
 				"营销代表",
