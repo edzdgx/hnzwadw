@@ -31,20 +31,27 @@ Edward0605:
 	-need fix:
 		DM_SALESMAN_SCORE 脚本中无内容
 gzy0605: 
-	-changed:
+	-has changed:
 		dw_service_orders
 		服务订单
 gzy0609
-	-changed:
+	-has changed:
 		ODS_SEV_S_DETAIL
 gzy0610:
-	-changed:
+	-has changed:
 		ODS_BUSINESS_OPP +省份
 		DW_BUSINESS_OPP +省份
 		DM_BUSINESS_OPP +省份
 		ODS_CUSTOMER_NEW +省份
 		DW_CUSTOMER_NEW +省份
 		DM_CUSTOMER_NEW +省份
+		DM_S_PRESALES +省份
+		DM_CUSTOMER_FACE +省份
+		DW_S_MILEAGE +省份
+		DM_S_MILEAGE +省份
+		
+	----need fix:
+		DW_LOSE_COM 脚本中无内容
 		
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
@@ -679,6 +686,7 @@ BEGIN
 				"名称",
 				"客户",
 				"完成时间",
+			 	"省份",	-----gzy0610:添加字段
 				time_stamp)
 			SELECT
 				"外勤类型名称",
@@ -686,6 +694,7 @@ BEGIN
 				"名称",
 				"客户",
 				"完成时间",
+				"省份",	-----gzy0618:添加字段
 				SYSDATE
 			FROM
 				INC_CUSTOMER_FACE a;
@@ -704,13 +713,16 @@ BEGIN
 			COMMIT;
 
 			INSERT INTO
-				dw_customer_face 
+				dw_customer_face(
+				
+				)
 			SELECT
 				"外勤类型名称",
 				"负责人",
 				"名称",
 				"客户",
 				"完成时间",
+				"省份",	-----gzy0610:添加字段
 				time_stamp
 			FROM
 				ods_customer_face
@@ -956,7 +968,8 @@ BEGIN
 				"总里程KM",
 				"业务员",
 				"司机名称",
-				"车牌号"
+				"车牌号",
+				"省份"	-----gzy0610:添加字段
 			) 
 			SELECT
 				"设备名称" as 销售代表,
@@ -977,13 +990,14 @@ BEGIN
 				"总里程KM",
 				"业务员",
 				"司机名称",
-				"车牌号"
+				"车牌号",
+				"省份"	-----gzy0610:添加字段
 			FROM
 				ods_s_person_mileage a,DW_DEPT_EMP b
 			WHERE a.设备名称 = b.负责人(+);
 			COMMIT;
 
-			--------记录报表处理的日志
+			--------记录报表处 理的日志
 			INSERT INTO ETL_LOG(TABLE_NAME,CURRENT_DATE,LOG_MSG,LOG_TYPE)
 				values(V_TABLE_NAME,SYSDATE,'DW_S_MILEAGE数据更新完成','日志记录');
 			COMMIT;
@@ -3160,13 +3174,21 @@ BEGIN
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_MILEAGE' ;
 		COMMIT;
 		INSERT INTO
-			DM_S_MILEAGE
+			DM_S_MILEAGE(
+				"年度",
+				"月度",
+				"日期",
+				"负责人",
+				"总里程",
+				"省份"	-----gzy0610:添加字段
+			)
 		SELECT
 			年度,
 			月度,
 			to_date(substr(to_char(日期,'yyyymmdd'),1,6)||'01','yyyymmdd') as 日期,
 			"销售代表" as 负责人,
-			sum("总里程KM") as 总里程
+			sum("总里程KM") as 总里程,
+			"省份"	-----gzy0610:添加字段
 		FROM
 			DW_S_MILEAGE
 		group by 
@@ -3353,7 +3375,18 @@ BEGIN
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE DM_S_PRESALES' ;
 		COMMIT;
 		INSERT INTO
-			DM_S_PRESALES
+			DM_S_PRESALES(
+				"年度",
+				"月度",
+				"日期",
+				"负责人",
+				"商机量",
+				"新客量",
+				"面访量",
+				"总里程",
+				"总行程量",
+				"省份"	-----gzy0610:添加字段
+			)
 		SELECT "年度",
 			"月度",
 			"日期",
@@ -3362,7 +3395,8 @@ BEGIN
 			sum(nvl(新客量,0)) as 新客量, 
 			sum(nvl(面访量,0)) as 面访量,
 			sum(nvl(总里程,0)) as 总里程,
-			sum(nvl(总里程,0)) as 总行程量
+			sum(nvl(总里程,0)) as 总行程量,
+			"省份"	-----gzy0610:添加字段
 		FROM
 			(SELECT
 				"年度",
@@ -3373,7 +3407,8 @@ BEGIN
 				0 as 新客量,
 				0 as 面访量,
 				0 as 总里程,
-				0 as 总行程量
+				0 as 总行程量,
+			 	"省份"	-----gzy0610:添加字段
 			FROM
 				dm_business_opp 
 			union all
@@ -3400,7 +3435,7 @@ BEGIN
 				0 as 新客量,
 				"面访量" as 面访量,
 				0 as 总里程,
-				0 as 总行程量
+				0 as 总行程量,
 				"省份"	-----gzy0610:添加字段
 			FROM
 				dm_customer_face
@@ -3414,7 +3449,8 @@ BEGIN
 				0 as 新客量,
 				0 as 面访量,
 				总里程,
-				0 as 总行程量
+				0 as 总行程量,
+			 	"省份"	-----gzy0610:添加字段
 			FROM
 				DM_S_MILEAGE
 			union all
@@ -3427,7 +3463,8 @@ BEGIN
 				0 as 新客量,
 				0 as 面访量,
 				0 as 总里程,
-				总行程量
+				总行程量,
+			 	"省份"	-----gzy0610:添加字段
 				FROM
 				DM_S_TRAVEL) a
 				group by "年度",
