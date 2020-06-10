@@ -31,14 +31,21 @@ Edward0605:
 	-need fix:
 		DM_SALESMAN_SCORE 脚本中无内容
 gzy0605: 
-	-已修改表格:
+	-changed:
 		dw_service_orders
 		服务订单
 gzy0609
-	-已修改表:
+	-changed:
 		ODS_SEV_S_DETAIL
-	
-	
+gzy0610:
+	-changed:
+		ODS_BUSINESS_OPP +省份
+		DW_BUSINESS_OPP +省份
+		DM_BUSINESS_OPP +省份
+		ODS_CUSTOMER_NEW +省份
+		DW_CUSTOMER_NEW +省份
+		DM_CUSTOMER_NEW +省份
+		
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 	------------申明变量
@@ -211,6 +218,7 @@ BEGIN
 				"预计成交金额",
 				"客户名称",
 				"团队角色",
+				"省份",	-----gzy0610:添加字段
 				TIME_STAMP)
 			SELECT
 				"员工姓名",
@@ -223,6 +231,7 @@ BEGIN
 				"预计成交金额",
 				"客户名称",
 				"团队角色",
+				"省份",	-----gzy0610:添加字段
 				SYSDATE
 			FROM
 				inc_business_opp a;
@@ -241,6 +250,18 @@ BEGIN
 			COMMIT;
 
 			INSERT INTO dw_business_opp 
+				("员工姓名",
+				 "商机状态",
+				 "创建时间",
+				 "最后跟进时间",
+				 "最后修改时间",
+				 "是否有竞品参与",
+				 "商机名称",
+				 "预计成交金额",
+				 "客户名称",
+				 "团队角色",
+				 TIME_STAMP,
+				 "省份")	-----gzy0610:添加字段
 			SELECT
 				"员工姓名",
 				"商机状态",
@@ -252,7 +273,8 @@ BEGIN
 				"预计成交金额",
 				"客户名称",
 				"团队角色",
-				time_stamp
+				time_stamp,
+				"省份"	-----gzy0610:添加字段
 			FROM
 				ods_business_opp
 			WHERE
@@ -319,6 +341,7 @@ BEGIN
 				"成交状态",
 				"最后跟进时间",
 				"团队角色",
+			 	"省份",	-----gzy0610:添加字段	
 				TIME_STAMP)
 			SELECT
 				"员工姓名",
@@ -326,6 +349,7 @@ BEGIN
 				"成交状态",
 				"最后跟进时间",
 				"团队角色",
+				"省份",	-----gzy0610:添加字段
 				SYSDATE
 			FROM
 				INC_CUSTOMER_NEW a;
@@ -343,14 +367,23 @@ BEGIN
 			EXECUTE IMMEDIATE 'TRUNCATE TABLE dw_customer_new' ;
 			COMMIT;
 
-			INSERT INTO
-				dw_customer_new 
+			INSERT INTO dw_customer_new
+			(
+				"员工姓名",
+				"客户名称",
+				"成交状态",
+				"最后跟进时间",
+				"团队角色",
+				"省份",	-----gzy0610:添加字段
+				TIME_STAMP
+			)
 			SELECT
 				"员工姓名",
 				"客户名称",
 				"成交状态",
 				"最后跟进时间",
 				"团队角色",
+				"省份",	-----gzy0610:添加字段
 				time_stamp
 			FROM
 				ODS_CUSTOMER_NEW
@@ -2503,21 +2536,22 @@ BEGIN
 			COMMIT;
 
 			INSERT INTO dw_service_orders
-				(订单完工时间,
-				服务订单号,
-				客户,
-				订单状态,
-				机号,
-				订单类型,
-				服务网点,
-				服务工程师,
-				故障描述,
-				创建时间,
-				保养节点,
-				工程师技能等级,
-				现场完工时间,
-				累计运行时间,
-				省份)		-----gzy:增加字段
+				(
+				"订单完工时间",
+				"服务订单号",
+				"客户",
+				"订单状态",
+				"机号",
+				"订单类型",
+				"服务网点",
+				"服务工程师",
+				"故障描述",
+				"创建时间",
+				"保养节点",
+				"工程师技能等级",
+				"现场完工时间",
+				"累计运行时间",
+				"省份")		-----gzy:增加字段
 			SELECT
 				"订单完工时间",
 				"服务订单号",
@@ -3075,13 +3109,21 @@ BEGIN
 		--------删除对象对应的DM表dm_business_opp
 		EXECUTE IMMEDIATE 'TRUNCATE TABLE dm_business_opp' ;
 		COMMIT;
-		INSERT INTO dm_business_opp
+		
+		INSERT INTO dm_business_opp(
+		"年度",
+		"月度",
+		"日期",
+		"负责人",
+		"新客量",
+		"省份")		-----gzy0610:添加字段
 		SELECT
 			substr(to_char(最后修改时间,'yyyymmdd'),1,4) as 年度,
 			substr(to_char(最后修改时间,'yyyymmdd'),5,2) as 月度,
 			to_date(substr(to_char(最后修改时间,'yyyymmdd'),1,6)||'01','yyyymmdd') as 日期,
 			"员工姓名" as 负责人,
-			count(1) as 新客量
+			count(1) as 新客量,
+			"省份"	-----gzy0610:添加字段
 		FROM
 			dw_business_opp
 		group by 
@@ -3206,12 +3248,21 @@ BEGIN
 		COMMIT;
 		INSERT INTO
 			dm_customer_new
+			(
+			"年度",
+			"月度",
+			"日期",
+			"负责人",
+			"新客量",
+			"省份"	-----gzy0619:添加省份
+			)
 		SELECT
 			substr(to_char(最后跟进时间,'yyyymmdd'),1,4) as 年度,
 			substr(to_char(最后跟进时间,'yyyymmdd'),5,2) as 月度,
 			to_date(substr(to_char(最后跟进时间,'yyyymmdd'),1,6)||'01','yyyymmdd') as 日期,
 			"员工姓名" as 负责人,
-			count(1) as 新客量
+			count(1) as 新客量,
+			"省份"	-----gzy0610:添加省份
 		FROM
 			dw_customer_new
 		group by 
@@ -3250,12 +3301,21 @@ BEGIN
 		COMMIT;
 		INSERT INTO
 			dm_customer_new
+			(
+				"年度",
+				"月度",
+				"日期",
+				"负责人",
+				"新客量",
+				"省份"	-----gzy0610:添加字段
+			)
 		SELECT
 			substr(to_char(完成时间,'yyyymmdd'),1,4) as 年度,
 			substr(to_char(完成时间,'yyyymmdd'),5,2) as 月度,
 			to_date(substr(to_char(完成时间,'yyyymmdd'),1,6)||'01','yyyymmdd') as 日期,
 			"负责人",
 			count(1) as 面访量
+			"省份"		-----gzy0610:添加字段
 		FROM
 			dw_customer_face
 		group by 
@@ -3326,7 +3386,8 @@ BEGIN
 				"新客量" as 新客量,
 				0 as 面访量,
 				0 as 总里程,
-				0 as 总行程量
+				0 as 总行程量,
+			 	"省份"	-----gzy0610:添加字段
 			FROM
 				dm_customer_new
 			union all
@@ -3340,6 +3401,7 @@ BEGIN
 				"面访量" as 面访量,
 				0 as 总里程,
 				0 as 总行程量
+				"省份"	-----gzy0610:添加字段
 			FROM
 				dm_customer_face
 			union all
