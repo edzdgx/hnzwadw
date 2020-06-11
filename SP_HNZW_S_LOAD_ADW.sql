@@ -712,9 +712,14 @@ BEGIN
 			EXECUTE IMMEDIATE 'TRUNCATE TABLE dw_customer_face' ;
 			COMMIT;
 
-			INSERT INTO
-				dw_customer_face(
-				
+			INSERT INTO dw_customer_face(
+					"外勤类型名称",
+					"负责人",
+					"名称",
+					"客户",
+					"完成时间",
+					TIME_STAMP,
+					"省份"	-----gzy0610:添加字段
 				)
 			SELECT
 				"外勤类型名称",
