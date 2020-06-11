@@ -53,6 +53,12 @@ gzy0610:
 	----need fix:
 		DW_LOSE_COM 脚本中无内容
 		
+gzy0611:
+	-has changed:
+		ODS_CUSTOMER_FACE +省份
+		DW_CUSTOMER_FACE +省份
+		DM_CUSTOMER_FACE +省份
+		ODS_S_PERSON_MILEAGE +省份
 */
 CREATE OR REPLACE PROCEDURE SP_HNZW_S_LOAD_ADW IS
 	------------申明变量
@@ -932,6 +938,7 @@ BEGIN
 				"业务员",
 				"司机名称",
 				"车牌号",
+			  	"省份",	-----gzy0611:添加字段
 				time_stamp)
 			SELECT
 				"序号",
@@ -943,6 +950,7 @@ BEGIN
 				"业务员",
 				"司机名称",
 				"车牌号",
+				"省份",	-----gzy0611:添加字段
 				SYSDATE
 			FROM
 				inc_s_person_mileage a;
@@ -1071,6 +1079,7 @@ BEGIN
 				"业务员",
 				"司机名称",
 				"车牌号",
+			 	"省份",	-----gzy0611:添加字段
 				time_stamp)
 			SELECT
 				"序号",
@@ -1087,6 +1096,7 @@ BEGIN
 				"业务员",
 				"司机名称",
 				"车牌号",
+				"省份",	-----gzy
 				SYSDATE
 			FROM
 				inc_s_person_travel a;
